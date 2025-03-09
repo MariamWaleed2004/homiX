@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:homix/core/const.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_in_screen.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_up_screen.dart';
+import 'package:homix/features/authentication/presentation/screens/test.dart';
+import 'package:homix/features/authentication/presentation/screens/test2.dart';
 import 'package:homix/features/onboarding_screen/presentation/screens/onboarding_screen.dart';
+import 'package:homix/splash_screen.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -19,7 +22,10 @@ class OnGenerateRoute {
       case ScreenConst.onboardingScreen: {
         return _fadeRoute(OnboardingScreen());
       }
-    
+      case ScreenConst.splashScreen: {
+        return _fadeRoute(SplashScreen());
+      }
+      
        
       default: NoScreenFound();
     }

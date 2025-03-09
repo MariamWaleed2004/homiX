@@ -13,6 +13,9 @@ class FormContainerWidget extends StatefulWidget {
   final bool? isConfirmPasswordField;
   final TextEditingController? passwordController;
   final TextEditingController? confirmPasswordController;
+  final Function(String)? onChanged;
+  //final String? errorMessage;
+  final bool isError;
 
   const FormContainerWidget({
     this.controller,
@@ -27,6 +30,9 @@ class FormContainerWidget extends StatefulWidget {
     this.isConfirmPasswordField,
     this.passwordController,
     this.confirmPasswordController,
+    this.onChanged,
+    //this.errorMessage,
+    required this.isError,
   });
 
   @override
@@ -40,55 +46,59 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
   bool _nameIsValid = false;
   bool _isValid = false;
   bool _hasTyped = false;
-  String? _errorMessage;
+  //String? _errorMessage;
 
 
 
-   bool _validateInput(String value) {
-    if (widget.isPasswordField == true) {
-      return value.length >= 8 &&
-          RegExp(r'[A-Z]').hasMatch(value) &&
-          RegExp(r'[0-9]').hasMatch(value) &&
-          RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value);
-    } else if (widget.isConfirmPasswordField == true) {
-      return value == widget.passwordController?.text;
-    } else if (widget.isEmailField == true) {
-      return value.contains("@");
-    } else if (widget.isNameField == true) {
-      return value.trim().isNotEmpty;
-    }
-    return true;
-  }
+  //  bool _validateInput(String value) {
+  //   if (widget.isPasswordField == true) {
+  //     return value.length >= 8 &&
+  //         RegExp(r'[A-Z]').hasMatch(value) &&
+  //         RegExp(r'[0-9]').hasMatch(value) &&
+  //         RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value);
+          
+  //   } else if (widget.isConfirmPasswordField == true) {
+  //     return value == widget.passwordController?.text;
+      
+  //   } 
+   
+  //   else if (widget.isEmailField == true) {
+  //     return value.contains("@");
 
-  void _onChanged(String value) {
-    setState(() {
-      _hasTyped = true;
-      _isValid = _validateInput(value); 
-      _errorMessage = null; 
-    });
-  }
+  //   } else if (widget.isNameField == true) {
+  //     return value.trim().isNotEmpty;
+  //   }
+  //   return true;
+  // }
 
-  String? _validateField(String? value) {
-    if (value == null || value.isEmpty) {
-      setState(() {
-      _errorMessage = "${widget.hintText} cannot be empty";
-      });
-      return _errorMessage;
-    }
-    if (widget.isEmailField == true && !_validateInput(value)) {
-      return "Please enter a valid email address.";
-    }
-    if (widget.isPasswordField == true && !_validateInput(value)) {
-      return "Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character.";
-    }
-    if (widget.isConfirmPasswordField == true &&
-        widget.passwordController != null &&
-        value != widget.passwordController!.text) {
-      return "Password and confirm password do not match";
-    }
-    return null;
+  // void _onChanged(String value) {
+  //   setState(() {
+  //     _hasTyped = true;
+  //     _isValid = _validateInput(value); 
+  //     _errorMessage = null; 
+  //   });
+  // }
+
+  // String? _validateField(String? value) {
+    //  if (widget.isNameField == true && !_validateInput(value!)) {
+    //   return "Please enter a valid name.";
+    // }
+
+  //   if (widget.isEmailField == true && !_validateInput(value!)) {
+  //     return "Please enter a valid email address.";
+  //   }
+  //   if (widget.isPasswordField == true && !_validateInput(value!)) {
+  //     return "Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character.";
+  //   }
+    // if (widget.isConfirmPasswordField == true &&
+    //     widget.passwordController != null &&
+    //     value != widget.passwordController!.text) {
+    //   return "Password and confirm password do not match";
+    // }
+
+  //   return null;
     
-  }
+  // }
 
   // bool _validatePassword(String password) {
   //   return password.length >= 8 // At least 8 characters
@@ -117,31 +127,25 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         controller: widget.controller,
         key: widget.fieldKey,
         obscureText: widget.isPasswordField == true ? _obscureText : false,
-       validator: _validateField,
+       validator: widget.validator,
        
-    //    (value) {
-    //     if (value == null || value.isEmpty) {
-    //   setState(() {
-    //   _errorMessage = "${widget.hintText} cannot be empty";
-    //   });
-    //   return _errorMessage;
-    // } 
-    //     if (widget.isEmailField == true && !_validateInput(value)) {
-    //       return "Please enter a valid email address.";
-    //     }
-    //     if (widget.isPasswordField == true && !_validateInput(value)) {
-    //       return "Password must be at least 8 characters long, contain an uppercase, a number, ans a special character.";
-    //     }
-    //     if (widget.isConfirmPasswordField != null && widget.passwordController != null) {
-    //       if (value != widget.passwordController!.text) {
-    //         return "Password and confirm password do not match";
-    //       }
+      //  (value) {
+      //   if (widget.isEmailField == true && !_validateInput(value!)) {
+      //     return "Please enter a valid email address.";
+      //   }
+      //   if (widget.isPasswordField == true && !_validateInput(value!)) {
+      //     return "Password must be at least 8 characters long, contain an uppercase, a number, ans a special character.";
+      //   }
+      //   if (widget.isConfirmPasswordField != null && widget.passwordController != null) {
+      //     if (value != widget.passwordController!.text) {
+      //       return "Password and confirm password do not match";
+      //     }
         
-    //     }
+      //   }
       
       // },
         keyboardType: widget.inputType,
-        onChanged: _onChanged,
+        onChanged: widget.onChanged,
         // (value) {
         //   setState(() {
         //     _hasTyped = true;
@@ -162,7 +166,8 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
           filled: false,
           hintText: widget.hintText,
           hintStyle: TextStyle(color: Colors.grey),
-          errorText: _errorMessage,
+          
+         // errorText: widget.isError ? widget.errorMessage : null,
           suffixIcon: GestureDetector(
             onTap: () {
               setState(() {
@@ -181,9 +186,10 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
               borderRadius: BorderRadius.circular(0)),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: _hasTyped 
-                 ? (_isValid ? Colors.green : Colors.red)
-                 : Colors.grey,
+                color: widget.isError ? Colors.red : Colors.grey,
+                //  _hasTyped 
+                //  ? (_isValid ? Colors.green : Colors.red)
+                //  : Colors.grey,
                 // widget.isNameField == true
                 //     ? (_nameIsValid ? Colors.green : Colors.red)
                 //     : widget.isPasswordField == true
@@ -198,9 +204,10 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
               borderRadius: BorderRadius.circular(0)),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: _hasTyped 
-                 ?(_isValid ? Colors.green : Colors.red)
-                 : Colors.grey,
+              color:widget.isError ? Colors.red : Colors.grey,
+              //  _hasTyped 
+              //    ?(_isValid ? Colors.green : Colors.red)
+              //    : Colors.grey,
               // widget.isNameField == true
               //     ? (_nameIsValid ? Colors.green : Colors.red)
               //     : widget.isPasswordField == true

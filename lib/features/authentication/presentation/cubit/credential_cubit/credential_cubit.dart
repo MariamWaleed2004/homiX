@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -35,7 +36,7 @@ class CredentialCubit extends Cubit<CredentialState> {
         emit(CredentialLoading());
         try {
           await signUpUserUsecase.call(user).timeout(
-            Duration(seconds: 10),
+           const Duration(seconds: 10),
             onTimeout: () {
               throw Exception("signUp process timed out");
             },
@@ -43,8 +44,10 @@ class CredentialCubit extends Cubit<CredentialState> {
           emit(CredentialSuccess());
         } on SocketException catch (_) {
           emit(CredentialFailure(errorMessage: "No internet connection"));
+        } on TimeoutException catch (e) {
+           emit(CredentialFailure(errorMessage: e.message ?? "Request timed out."));
         } catch (e) {
-          emit(CredentialFailure(errorMessage: e.toString()));
+          emit(CredentialFailure(errorMessage: "Signup failed: ${e.toString()}"));
         }
       }
 }
