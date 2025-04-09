@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '316982976696',
     projectId: 'power-campus-25c89',
     storageBucket: 'power-campus-25c89.appspot.com',
+    androidClientId: '316982976696-p0otv2945tp13tm6qil0feh0fo402ovt.apps.googleusercontent.com',
+    iosClientId: '316982976696-4pisos5hr5kpev5qv7l5pefecnivp7gb.apps.googleusercontent.com',
     iosBundleId: 'com.example.homix',
   );
 

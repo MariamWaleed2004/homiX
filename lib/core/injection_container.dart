@@ -12,6 +12,8 @@ import 'package:homix/features/authentication/domain/usecases/get_single_user_us
 import 'package:homix/features/authentication/domain/usecases/get_users_usecase.dart';
 import 'package:homix/features/authentication/domain/usecases/is_sign_in_usecase.dart';
 import 'package:homix/features/authentication/domain/usecases/sign_in_user_usecase.dart';
+import 'package:homix/features/authentication/domain/usecases/sign_in_with_google.dart';
+import 'package:homix/features/authentication/domain/usecases/sign_up_with_google.dart';
 import 'package:homix/features/authentication/domain/usecases/sign_out_user_usecase.dart';
 import 'package:homix/features/authentication/domain/usecases/sign_up_user_usecase.dart';
 import 'package:homix/features/authentication/domain/usecases/update_user_usecase.dart';
@@ -37,6 +39,8 @@ Future<void> init() async {
     () => CredentialCubit(
       signInUserUsecase: sl.call(),
       signUpUserUsecase: sl.call(),
+      signUpWithGoogleUsecase: sl.call(),
+      signInWithGoogleUsecase: sl.call(),
      ));
 
      sl.registerFactory(
@@ -61,6 +65,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => CreateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => SignUpWithGoogleUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => SignInWithGoogleUsecase(repository: sl.call()));
   //sl.registerLazySingleton(() => GetUsersUsecase(repository: sl.call()));
 
 

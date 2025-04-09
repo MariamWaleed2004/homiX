@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:homix/features/authentication/domain/entities/user_entity.dart';
 
 
@@ -24,6 +26,12 @@ abstract class AuthRemoteDataSource {
   Stream<List<UserEntity>> getSingleUser(String uid);
 
   Future<void> updateUser(UserEntity user);
+
+  
+  Future<UserCredential?> signUpWithGoogle(BuildContext context);
+
+  Future<UserCredential?> signInWithGoogle();
+
 
 
 }

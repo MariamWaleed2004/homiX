@@ -12,7 +12,12 @@
           "package_name": "com.example.homix"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "316982976696-0jc98ogb59inrp74hhplfbulc9v94v5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDLztUQUuOTMvzEWrqMN5xXBEYi1tap4EM"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "316982976696-0jc98ogb59inrp74hhplfbulc9v94v5l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "316982976696-4pisos5hr5kpev5qv7l5pefecnivp7gb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.homix"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "com.example.power_campus"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "316982976696-tmji5tital10kgeb6l82ihc9256lm842.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.power_campus",
+            "certificate_hash": "568a66075e86e9487b5398f18e3c5916ceb6fced"
+          }
+        },
+        {
+          "client_id": "316982976696-0jc98ogb59inrp74hhplfbulc9v94v5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDLztUQUuOTMvzEWrqMN5xXBEYi1tap4EM"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "316982976696-0jc98ogb59inrp74hhplfbulc9v94v5l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "316982976696-4pisos5hr5kpev5qv7l5pefecnivp7gb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.homix"
+              }
+            }
+          ]
         }
       }
     }

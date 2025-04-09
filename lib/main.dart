@@ -8,11 +8,11 @@ import 'package:homix/features/authentication/presentation/cubit/get_single_user
 import 'package:homix/features/authentication/presentation/cubit/user_cubit/user_cubit.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_in_screen.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_up_screen.dart';
+import 'package:homix/features/authentication/presentation/screens/verification_screen.dart';
 import 'package:homix/main_screen.dart';
+import 'package:homix/navigatorKey.dart';
 import 'package:homix/splash_screen.dart';
 import 'package:homix/core/injection_container.dart' as di;
-
-
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,23 +36,35 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: OnGenerateRoute.route,
+        navigatorKey: navigatorKey,
         initialRoute: "/",
         routes: {
-          "/" : (context) {
-            return  BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, authState) {
-                  print("11111111111111${authState}");
-                  if(authState is Authenticated) {
-                  return MainScreen(uid: authState.uid);
-                  } else {
-                    return SplashScreen();
-                  }
-                },
-              );
-          }
+          "/": (context) => SplashScreen()
+          // {
+          //      return BlocBuilder<AuthCubit, AuthState>(
+          //       builder: (context, authState) {
+          //     if (authState is Authenticated) {
+          //       print("11111111111111${authState}");
+          //       return MainScreen(uid: authState.uid);
+          //     } else {
+          //       return SplashScreen();
+          //     }
+          //   });
+          // }
+
+         
+          
         },
-        // home: SplashScreen(),
+        //home: SignInScreen(),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+

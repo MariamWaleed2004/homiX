@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:homix/core/const.dart';
 import 'package:homix/features/authentication/presentation/cubit/auth_cubit/auth_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/credential_cubit/credential_cubit.dart';
@@ -22,6 +23,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+   final GoogleSignIn _googleSignIn = GoogleSignIn();
+
 
   bool _emailError = false;
   bool _passwordError = false;
@@ -66,10 +69,23 @@ class _SignInScreenState extends State<SignInScreen> {
       body: 
       BlocConsumer<CredentialCubit, CredentialState>(
           listener: (context, credentialState) {
+
+            if(credentialState is CredentialLoading) {
+              setState(() {
+                _isSigningIn = true;
+              });
+            }
+
             if(credentialState is CredentialSuccess) {
               BlocProvider.of<AuthCubit>(context).loggedIn();
+              setState(() {
+                _isSigningIn = false;
+              });
             }
             if(credentialState is CredentialFailure) {
+               setState(() {
+                _isSigningIn = false;
+              });
               toast('Invalid Email and Password');
             }
           },
@@ -164,43 +180,84 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 20.0, left: 20.0),
-                  child: ButtonContainerWidget(
-                      color: Colors.black,
-                      child: _isSigningIn == false
-                          ? Text(
-                              'Sign In',
-                              style: TextStyle(
-                                color: Colors.white,
-                                //fontWeight: FontWeight.w600
-                              ),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Signing In',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(
-                                  width: width * 0.02,
-                                ),
-                                LoadingAnimationWidget.fourRotatingDots(color: Colors.white, size: 24),
-                              ],
-                            ),
-                      onTapListener: () {
-                        // if (!_isChecked) {
-                        //  setState(() {
-                        //    _isCheckedError = true;
-                        //  });
-                        //   return;
-                        // }
-                        if (_formKey.currentState!.validate()) {
-                          _signInUser();
-                        }
-                      },
+                  child: 
+                  
+                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      minimumSize: Size(double.infinity, 50)
                     ),
+                    onPressed: _isSigningIn
+                    ? null
+                    : () {
+                        if (_formKey.currentState!.validate()) {
+                    _signInUser();
+                    }
+                    } ,
+                    child:  _isSigningIn == false
+                        ? Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Signing In',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(
+                                width: width * 0.01,
+                              ),
+                            LoadingAnimationWidget.fourRotatingDots(color: Colors.white, size: 24),
+
+                            ],
+                          ),
+                    ),
+
+
+                  // ButtonContainerWidget(
+                  //     color: _isSigningIn ? Colors.grey[300] : Colors.black,
+                  //     onTapListener: _isSigningIn
+                  //   ? null
+                  //   : () {
+                  //       if (_formKey.currentState!.validate()) {
+                  //   _signInUser();
+                  //   }
+                  //   } ,
+                  //     child: _isSigningIn == false
+                  //         ? Text(
+                  //             'Sign In',
+                  //             style: TextStyle(
+                  //               color: Colors.white,
+                  //               fontWeight: FontWeight.w600
+                  //             ),
+                  //           )
+                  //         : Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               Text(
+                  //                 'Signing In',
+                  //                 style: TextStyle(
+                  //                     color: _isSigningIn ? Colors.grey[600] : Colors.white,
+                  //                     fontWeight: FontWeight.w600),
+                  //               ),
+                  //               SizedBox(
+                  //                 width: width * 0.02,
+                  //               ),
+                  //               LoadingAnimationWidget.fourRotatingDots(color: Colors.grey, size: 24),
+                  //             ],
+                  //           ),
+                      
+                  //   ),
                 ),
                 SizedBox(height: height * 0.02),
                 Center(
@@ -232,28 +289,16 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 SizedBox(height: height * 0.02),
+
+                
                 Padding(
                   padding: const EdgeInsets.only(right: 20.0, left: 20.0),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 240, 239, 239),
-                      foregroundColor: Colors.black,
-                      shadowColor: Colors.transparent,
-                      side: BorderSide(
-                        color: Colors.grey,
-                      ),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 15,
-                      ),
-                    ),
-                    child: Row(
+                  child: ButtonContainerWidget(
+                      color: const Color.fromARGB(255, 240, 239, 239),
+                      child:  Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+
                         Container(
                             //height: height * 0.05,
                             width: width * 0.1,
@@ -262,8 +307,53 @@ class _SignInScreenState extends State<SignInScreen> {
                         Text('Sign in with Google'),
                       ],
                     ),
-                  ),
+                      onTapListener: () {
+                       _signInWithGoogle();
+                      },
+                    ),
+                
+
+
+                  
+                  // ElevatedButton(
+                  //   onPressed: () {},
+                  //   style: ElevatedButton.styleFrom(
+                  //     foregroundColor: Colors.black,
+                  //     shadowColor: Colors.transparent,
+                      // side: BorderSide(
+                      //   color: Colors.grey,
+                      // ),
+                  //     minimumSize: const Size(double.infinity, 50),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(0),
+                  //     ),
+                  //     textStyle: const TextStyle(
+                  //       fontSize: 15,
+                  //     ),
+                  //   ),
+                    // child: Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+
+                    //     Container(
+                    //         //height: height * 0.05,
+                    //         width: width * 0.1,
+                    //         child: Image.asset('assets/logo_.png')),
+                    //     SizedBox(width: width * 0.02),
+                    //     Text('Sign in with Google'),
+                    //   ],
+                    // ),
+                  // ),
                 ),
+
+                // ButtonContainerWidget(
+                //       color: const Color.fromARGB(255, 240, 239, 239),
+                //       child:   Text('Sign out with Google'),
+                //       onTapListener: () {
+                //         BlocProvider.of<AuthCubit>(context).loggedOut();
+                //        //_googleSignIn.signOut();
+                //       },
+                //     ),
                 SizedBox(height: height * 0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -298,19 +388,38 @@ class _SignInScreenState extends State<SignInScreen> {
 
 
   void _signInUser() {
-    setState(() {
+    try {
+      setState(() {
       _isSigningIn = true;
     });
     BlocProvider.of<CredentialCubit>(context).signInUser(
         email: _emailController.text, 
         password: _passwordController.text
         ).then((value) => _clear());
+    } catch (e) {
+      setState(() {
+        _isSigningIn = false;
+      });
+      toast("Sign in failed. Please try again.");
+    }
+    
   }
 
   _clear() {
     setState(() {
       _emailController.clear();
       _passwordController.clear();
+      _isSigningIn = false;
+    });
+  }
+
+
+  void _signInWithGoogle() {
+    setState(() {
+      _isSigningIn = true;
+    });
+    BlocProvider.of<CredentialCubit>(context).signInWithGoogle();
+    setState(() {
       _isSigningIn = false;
     });
   }

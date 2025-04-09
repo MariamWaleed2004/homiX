@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:homix/features/authentication/data/datasources/remote_data_sources/auth_remote_data_source.dart';
 import 'package:homix/features/authentication/domain/entities/user_entity.dart';
 import 'package:homix/features/authentication/domain/repositories/auth_repo.dart';
@@ -51,6 +53,16 @@ class AuthRepoImpl implements AuthRepo {
   @override
   Future<void> updateUser(UserEntity user) async 
   => authRemoteDataSource.updateUser(user);
+
+  @override
+  Future<UserCredential?> signUpWithGoogle(BuildContext context) async
+  => authRemoteDataSource.signUpWithGoogle(context);
+
+    @override
+  Future<UserCredential?> signInWithGoogle() async
+  => authRemoteDataSource.signInWithGoogle();
+  
+  
 
     
 }

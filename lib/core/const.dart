@@ -19,6 +19,8 @@ class ScreenConst {
   static const String onboardingScreen = 'onboardingScreen';
   static const String splashScreen = 'splashScreen';
   static const String testScreen = 'testScreen';
+  static const String verificationScreen = 'verificationScreen';
+  static const String mainScreen = 'mainScreen';
 
 
 }

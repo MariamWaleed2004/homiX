@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:homix/features/authentication/domain/entities/user_entity.dart';
 
 abstract class AuthRepo {
@@ -27,4 +29,9 @@ abstract class AuthRepo {
   Stream<List<UserEntity>> getUsers(UserEntity user);
 
   Stream<List<UserEntity>> getSingleUser(String uid);
+
+
+  Future<UserCredential?> signUpWithGoogle(BuildContext context);
+
+  Future<UserCredential?> signInWithGoogle();
 }
