@@ -11,6 +11,7 @@ import 'package:homix/features/authentication/data/models/user_model.dart';
 import 'package:homix/features/authentication/domain/entities/user_entity.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_in_screen.dart';
 import 'package:homix/main.dart';
+import 'package:homix/main_screen.dart';
 import 'package:homix/navigatorKey.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:uuid/uuid.dart';
@@ -79,19 +80,27 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<bool> isSignIn() async => firebaseAuth.currentUser?.uid != null;
 
   @override
-  Future<void> signInUser(UserEntity user) async {
+  Future<void> signInUser(UserEntity user, BuildContext context) async {
     try {
-      if (user.email!.isNotEmpty || user.password!.isNotEmpty) {
-        await firebaseAuth.signInWithEmailAndPassword(
+
+      final existingUser = await firebaseFirestore
+        .collection("users")
+        .where("email", isEqualTo: user.email)
+        .get();
+
+    if (existingUser.docs.isEmpty) {
+       _showIfAccountNotExistsDialog(context);
+    } else {
+      await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
-      } else {
-        print("fields can't be empty");
-      }
+    } 
+    
+
     } on FirebaseAuthException catch (e) {
-      if (e.code == "User-not-found") {
-        toast("User not found");
-      } else if (e.code == "wrong-password") {
-        toast("Invalid email or password");
+      
+     if (e.code == "wrong-password") {
+
+        print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrr");
       }
     }
   }
@@ -101,59 +110,98 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await firebaseAuth.signOut();
   }
 
+
+
   @override
-  Future<void> signUpUser(UserEntity user) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
+Future<void> signUpUser(UserEntity user, BuildContext context) async {
+  try {
 
-    try {
-      UserCredential userCredential =
-          await firebaseAuth.createUserWithEmailAndPassword(
-              email: user.email!, password: user.password!);
+    final existingUser = await firebaseFirestore
+        .collection("users")
+        .where("email", isEqualTo: user.email)
+        .get();
 
-          
-           
-      if (userCredential.user != null) {
-   
-        await createUser(user); // Save user to Firestore
+    if (existingUser.docs.isNotEmpty) {
+       _showIfAccountExistsDialog(context);
+       print("222222222222222222222user");
+    } else {
+          UserCredential userCredential =
+        await firebaseAuth.createUserWithEmailAndPassword(
+      email: user.email!,
+      password: user.password!,
+    );
 
+    if (userCredential.user != null) {
 
-        // Send email verification
+      await createUser(user);
+
+      try {
         await userCredential.user!.sendEmailVerification();
+      Navigator.pushNamed(context, ScreenConst.verificationScreen);
 
-
+      } catch (e) {
+        toast("Failed to send verification email: $e");
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        toast("Email is already taken");
-      } else {
-        toast('Something went wrong');
+
       }
     }
+
+    
+         
+  } on FirebaseAuthException catch (e) {
+        toast('Something went wrong');
+
+      //    if (e.code == 'email-already-in-use') {
+      //    _showIfAccountExistsDialog;
+      // } else {
+      // }
   }
+ 
+}
+
 
   // @override
   // Future<void> signUpUser(UserEntity user) async {
+  //   User? currentUser = FirebaseAuth.instance.currentUser;
+
+
   //   try {
-  //     UserCredential userCredential = await firebaseAuth
-  //         .createUserWithEmailAndPassword(
-  //             email: user.email!, password: user.password!)
+  //     UserCredential userCredential =
+  //         await firebaseAuth.createUserWithEmailAndPassword(
+  //             email: user.email!, password: user.password!);
 
-  //         .then((currentUser) async {
-  //       if (currentUser.user?.uid != null) {
-  //         await createUser(user);
-  //       //await userCredential.user!.sendEmailVerification();
+            
+           
+  //     if (userCredential.user != null) {
 
-  //       }
-  //     });
-  //     return;
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'email-already-in-use') {
-  //       toast("email is already taken");
-  //     } else {
-  //       toast('something went wrong');
+  //            await createUser(user); // Save user to Firestore 
+
+  //         try {
+  //                 await userCredential.user!.sendEmailVerification();
+
+  //             } catch (e) {
+  //               toast("Failed to send verification email: $e");
+  //             }
+
+
+
+
+        
   //     }
+      
+  //   } on FirebaseAuthException catch (e) {
+      // if (e.code == 'email-already-in-use') {
+      //   toast("Email is already taken");
+      // } else {
+      //   toast('Something went wrong');
+      // }
   //   }
   // }
+
+
+
+
+
 
   @override
   Future<String> uploadImageToStorage(
@@ -375,8 +423,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (user != null) {
         await _saveUserToFirestore(user);
       }
-
-      await userCredential.user!.sendEmailVerification();
+       Navigator.push(context, MaterialPageRoute(builder: (ctx) => MainScreen(uid: user!.uid)));
 
       return userCredential;
     } catch (e) {
@@ -384,6 +431,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return null;
     }
   }
+
+
+
+
 
   Future<bool> _checkIfUserExists(String? email) async {
     if (email == null) return false;
@@ -464,33 +515,61 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
    );
   }
 
-
-
-    void _showIfAccountNotExistsDialog() {
-    showDialog(
-      context: navigatorKey.currentState!.overlay!.context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Sign in failed"),
-          content:
-              Text("Account doesn't exists. Please sign up instead."),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); 
-              },
-              child: Text(
-                "Okay",
-                style: TextStyle(
-                  color: Colors.black
-                ),
-                ),
-            ),
+   void _showIfAccountNotExistsDialog(BuildContext context) {
+   showTopSnackBar(
+    Overlay.of(context),
+    Material(
+      elevation: 6,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.warning, color: Colors.white,),
+            SizedBox(width: 8),
+            Expanded(child: Text(
+              "Account doesn't exist, Please sign up instead.",
+              style: TextStyle(color: Colors.white),
+            ))
           ],
-        );
-      },
-    );
+        ),
+      ),
+    )
+   );
   }
+
+
+
+  //   void _showIfAccountNotExistsDialog() {
+  //   showDialog(
+  //     context: navigatorKey.currentState!.overlay!.context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("Sign in failed"),
+  //         content:
+  //             Text("Account doesn't exists. Please sign up instead."),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop(); 
+  //             },
+  //             child: Text(
+  //               "Okay",
+  //               style: TextStyle(
+  //                 color: Colors.black
+  //               ),
+  //               ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> _saveUserToFirestore(User user) async {
     final userDoc =
@@ -520,7 +599,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   
  @override
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle(BuildContext context) async {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
@@ -548,7 +627,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       bool accountExists = await _checkIfUserExists(googleUser.email);
       if (!accountExists) {
-        _showIfAccountNotExistsDialog();
+        _showIfAccountNotExistsDialog(context);
         return null;
       }
 

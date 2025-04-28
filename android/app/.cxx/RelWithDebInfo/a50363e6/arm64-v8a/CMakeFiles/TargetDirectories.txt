@@ -1,0 +1,2 @@
+C:/My-LP/Flutter/homix/android/app/.cxx/RelWithDebInfo/a50363e6/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/My-LP/Flutter/homix/android/app/.cxx/RelWithDebInfo/a50363e6/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -18,16 +18,16 @@ class AuthRepoImpl implements AuthRepo {
   => authRemoteDataSource.isSignIn();
 
   @override
-  Future<void> signInUser(UserEntity user) async
-  => authRemoteDataSource.signInUser(user);
+  Future<void> signInUser(UserEntity user, BuildContext context) async
+  => authRemoteDataSource.signInUser(user, context);
 
   @override
   Future<void> signOut() async
   => authRemoteDataSource.signOut();
 
   @override
-  Future<void> signUpUser(UserEntity user) async
-  => authRemoteDataSource.signUpUser(user);
+  Future<void> signUpUser(UserEntity user, BuildContext context) async
+  => authRemoteDataSource.signUpUser(user, context);
 
   @override
   Future<void> createUser(UserEntity user) async 
@@ -59,8 +59,8 @@ class AuthRepoImpl implements AuthRepo {
   => authRemoteDataSource.signUpWithGoogle(context);
 
     @override
-  Future<UserCredential?> signInWithGoogle() async
-  => authRemoteDataSource.signInWithGoogle();
+  Future<UserCredential?> signInWithGoogle(BuildContext context) async
+  => authRemoteDataSource.signInWithGoogle(context);
   
   
 

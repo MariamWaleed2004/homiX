@@ -2,16 +2,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homix/core/const.dart';
+import 'package:homix/features/authentication/presentation/screens/forgot_password_screen.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_in_screen.dart';
 import 'package:homix/features/authentication/presentation/screens/sign_up_screen.dart';
 import 'package:homix/features/authentication/presentation/screens/test.dart';
 import 'package:homix/features/authentication/presentation/screens/verification_screen.dart';
+import 'package:homix/features/home/data/models/property_model.dart';
+import 'package:homix/features/home/presentation/screens/popular_apartments_screen.dart';
+import 'package:homix/features/home/presentation/screens/property_details_screen.dart';
 import 'package:homix/features/onboarding_screen/presentation/screens/onboarding_screen.dart';
 import 'package:homix/main_screen.dart';
 import 'package:homix/splash_screen.dart';
 
 class OnGenerateRoute {
     User? user = FirebaseAuth.instance.currentUser;
+
+    
 
   static Route<dynamic>? route(RouteSettings settings) {
     final args = settings.arguments;
@@ -33,6 +39,15 @@ class OnGenerateRoute {
        case ScreenConst.verificationScreen: {
         return _fadeRoute(VerificationScreen());
       }
+       case ScreenConst.forgotPasswordScreen: {
+        return _fadeRoute(ForgotPasswordScreen());
+      }
+      case ScreenConst.PopularApartmentsScreen: {
+        return _fadeRoute(PopularApartmentsScreen());
+      }
+  
+    
+    
     
        
       default: NoScreenFound();

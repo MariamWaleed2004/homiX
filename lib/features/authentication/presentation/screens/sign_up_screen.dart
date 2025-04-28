@@ -11,6 +11,7 @@ import 'package:homix/features/authentication/presentation/widgets/check_box_wid
 import 'package:homix/features/authentication/presentation/widgets/form_container_widget.dart';
 import 'package:homix/main_screen.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -66,8 +67,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   bool _validateEmail(String email) {
-    return email.contains("@");
-  }
+  final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w{2,6}$');
+  return regex.hasMatch(email);
+}
+
 
   bool _validateName(String name) {
     return name.trim().isNotEmpty;
@@ -106,19 +109,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     return null;
   }
-
   void _onTextChanged(String value, String field) {
-    setState(() {
-      if (field == "email" && _validateEmail(value)) {
-        _emailError = false;
-        _validateErrorMessage = false;
-      }
-      if (field == "password") _passwordError = false;
+  setState(() {
+    final error = _validateField(value, field);
 
-      if (field == "name") _nameError = false;
-      if (field == "confirmPassword") _confirmPasswordError = false;
-    });
-  }
+    switch (field) {
+      case "email":
+        _emailError = error != null;
+        _validateErrorMessage = error != null;
+        break;
+      case "password":
+        _passwordError = error != null;
+        break;
+      case "name":
+        _nameError = error != null;
+        break;
+      case "confirmPassword":
+        _confirmPasswordError = error != null;
+        break;
+    }
+  });
+}
+
+
+  // void _onTextChanged(String value, String field) {
+  //   setState(() {
+  //     if (field == "email" && _validateEmail(value)) {
+  //       _emailError = false;
+  //       _validateErrorMessage = false;
+  //     }
+  //     if (field == "password") _passwordError = false;
+
+  //     if (field == "name") _nameError = false;
+  //     if (field == "confirmPassword") _confirmPasswordError = false;
+  //   });
+  // }
 
   void _onCheckBoxChanged(bool value) {
     setState(() {
@@ -140,13 +165,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           });
         }
 
-        if (credentailState is CredentialSuccess &&
-            user != null &&
-            !user.emailVerified
+        if (credentailState is CredentialSuccess 
+        // &&
+        //     user != null &&
+        //     user.emailVerified
             ) {
-          BlocProvider.of<AuthCubit>(context).loggedIn();
-          Navigator.pushNamed(
-              context, ScreenConst.verificationScreen);
+              
+          // BlocProvider.of<AuthCubit>(context).loggedIn();
+          // Navigator.pushNamed(
+          //     context, ScreenConst.verificationScreen);
           setState(() {
             _isSigningUp = false;
           });
@@ -222,6 +249,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   hintText: "Email",
                   isEmailField: true,
                   isError: _emailError,
+                  inputType: TextInputType.emailAddress,
                   // errorMessage: "",
                   onChanged: (value) => _onTextChanged(value, "email"),
                   validator: (value) => _validateField(value, "email"),
@@ -486,35 +514,110 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _signUpUser() async {
-    //final userUid = FirebaseAuth.instance.currentUser!.uid;
 
-    try {
-      setState(() {
-        _isSigningUp = true;
-        _emailError = _emailController.text.isEmpty;
-        _passwordError = _passwordController.text.isEmpty;
-        _nameError = _nameController.text.isEmpty;
-        _confirmPasswordError = _confirmPasswordController.text.isEmpty;
-      });
-      await BlocProvider.of<CredentialCubit>(context)
-          .signUpUser(
-        user: UserEntity(
-            uid: '',
-            name: _nameController.text,
-            email: _emailController.text,
-            password: _passwordController.text,
-            confirmPassword: _confirmPasswordController.text),
-      )
-          .then((value) => _clear());
 
-    } catch (e) {
-      setState(() {
-        _isSigningUp = false;
-      });
-      toast("Sign up failed. Please try again.");
-    }
+void _signUpUser() async {
+  try {
+    setState(() {
+      _isSigningUp = true;
+      _emailError = _emailController.text.isEmpty;
+      _passwordError = _passwordController.text.isEmpty;
+      _nameError = _nameController.text.isEmpty;
+      _confirmPasswordError = _confirmPasswordController.text.isEmpty;
+    });
+
+    await BlocProvider.of<CredentialCubit>(context).signUpUser(
+      context: context,
+      user: UserEntity(
+        uid: '',
+        name: _nameController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        confirmPassword: _confirmPasswordController.text,
+      ),
+    );
+    
+
+    // if (success) {
+    //   _clear();
+    //   Navigator.pushNamed(context, ScreenConst.verificationScreen);
+    // } else {
+    //   _showIfAccountExistsDialog;
+    //   setState(() {
+    //     _isSigningUp = false;
+    //   });
+    // }
+  } catch (e) {
+    setState(() {
+      _isSigningUp = false;
+    });
+    toast("Sign up failed. Please try again.");
   }
+}
+
+
+
+  void _showIfAccountExistsDialog(BuildContext context) {
+   showTopSnackBar(
+    Overlay.of(context),
+    Material(
+      elevation: 6,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.warning, color: Colors.white,),
+            SizedBox(width: 8),
+            Expanded(child: Text(
+              "Account already exist, Please log in instead.",
+              style: TextStyle(color: Colors.white),
+            ))
+          ],
+        ),
+      ),
+    )
+   );
+  }
+
+  // void _signUpUser() async {
+  //   final user = FirebaseAuth.instance.currentUser;
+
+  //   try {
+  //     setState(() {
+  //       _isSigningUp = true;
+  //       _emailError = _emailController.text.isEmpty;
+  //       _passwordError = _passwordController.text.isEmpty;
+  //       _nameError = _nameController.text.isEmpty;
+  //       _confirmPasswordError = _confirmPasswordController.text.isEmpty;
+  //     });
+  //     await BlocProvider.of<CredentialCubit>(context)
+  //         .signUpUser(
+  //           context: context,
+  //       user: UserEntity(
+  //           uid: '',
+  //           name: _nameController.text,
+  //           email: _emailController.text.trim(),
+  //           password: _passwordController.text,
+  //           confirmPassword: _confirmPasswordController.text),
+  //     )
+  //         .then((value) => _clear());
+        
+
+
+
+  //   } catch (e) {
+  //     setState(() {
+  //       _isSigningUp = false;
+  //     });
+  //     toast("Sign up failed. Please try again.");
+  //   }
+  // }
 
   _clear() {
     setState(() {

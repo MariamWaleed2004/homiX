@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,23 +30,19 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _emailError = false;
   bool _passwordError = false;
   bool _isSigningIn = false;
+  bool _validateErrorMessage = false;
+
 
 
 
     bool _validatePassword(String password) {
-    return password.length >= 8 // At least 8 characters
-        &&
-        RegExp(r'[A-Z]').hasMatch(password) // At least one uppercase letter
-        &&
-        RegExp(r'[0-9]').hasMatch(password) // At least one number
-        &&
-        RegExp(r'[!@#$%^&*(),.?":{}|<>]')
-            .hasMatch(password); // At least one special character
+    return password.isNotEmpty;
   }
 
   bool _validateEmail(String email) {
-    return email.contains("@");
-  }
+    final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w{2,6}$');
+    return regex.hasMatch(email);
+}
 
 
     String? _validateField(String? value, String fieldType) {
@@ -55,12 +52,30 @@ class _SignInScreenState extends State<SignInScreen> {
 
     if (fieldType == "password" && !_validatePassword(value!)) {
       return "Please enter a valid password";
-      //"Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character.";
     }
 
     
     return null;
   }
+
+
+  void _onTextChanged(String value, String field) {
+  setState(() {
+    final error = _validateField(value, field);
+
+    switch (field) {
+      case "email":
+        _emailError = error != null;
+        _validateErrorMessage = error != null;
+        break;
+      case "password":
+        _passwordError = error != null;
+        break;
+
+
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +101,6 @@ class _SignInScreenState extends State<SignInScreen> {
                setState(() {
                 _isSigningIn = false;
               });
-              toast('Invalid Email and Password');
             }
           },
           builder: (context, credentailState) {
@@ -138,9 +152,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 20.0, left: 20.0),
                   child: FormContainerWidget(
+                    inputType: TextInputType.emailAddress,
                     controller: _emailController,
                     isError: _emailError,
                     hintText: "Email",
+                    onChanged: (value) => _onTextChanged(value, "email"),
                     validator: (value) => _validateField(value, "email"),
       
                   ),
@@ -166,7 +182,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                     TextButton(onPressed: (){}, child: Text(
+                     TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, ScreenConst.forgotPasswordScreen);
+                      },
+                       child: Text(
                       'Forgot Password?',
                       style: TextStyle(
                         color: Colors.black,
@@ -387,22 +407,21 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
 
-  void _signInUser() {
+  void _signInUser() async {
     try {
       setState(() {
       _isSigningIn = true;
     });
-    BlocProvider.of<CredentialCubit>(context).signInUser(
+    await BlocProvider.of<CredentialCubit>(context).signInUser(
+      context: context,
         email: _emailController.text, 
         password: _passwordController.text
         ).then((value) => _clear());
-    } catch (e) {
-      setState(() {
-        _isSigningIn = false;
-      });
-      toast("Sign in failed. Please try again.");
-    }
-    
+    } on FirebaseAuthException 
+  catch (e) {
+    print("Error: $e");
+
+  }
   }
 
   _clear() {
@@ -418,7 +437,7 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() {
       _isSigningIn = true;
     });
-    BlocProvider.of<CredentialCubit>(context).signInWithGoogle();
+    BlocProvider.of<CredentialCubit>(context).signInWithGoogle(context);
     setState(() {
       _isSigningIn = false;
     });

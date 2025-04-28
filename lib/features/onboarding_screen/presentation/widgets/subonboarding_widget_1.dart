@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homix/core/const.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 
 
@@ -29,17 +30,18 @@ class SubonboardingWidget1 extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(25),
-                      child: Image.asset(
-                        'assets/photo8.png',
-                        fit: BoxFit.cover,
+                      child: Icon(PhosphorIconsFill.mapPin, size: 250,)
+                      // Image.asset(
+                      //   'assets/photo8.png',
+                      //   fit: BoxFit.cover,
                         
-                        ),
+                      //   ),
                         
                     ),
                   ),
                 ),
             ),
-              SizedBox(height: height * 0.06),
+              SizedBox(height: height * 0.05),
               Padding(
                 padding: const EdgeInsets.only(right: 10.0, left: 10.0),
                 child: Text(

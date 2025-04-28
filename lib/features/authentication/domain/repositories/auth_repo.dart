@@ -6,9 +6,9 @@ import 'package:homix/features/authentication/domain/entities/user_entity.dart';
 
 abstract class AuthRepo {
 
-  Future<void> signInUser(UserEntity user);
+  Future<void> signInUser(UserEntity user, BuildContext context);
 
-  Future<void> signUpUser(UserEntity user);
+  Future<void> signUpUser(UserEntity user, BuildContext context);
   
   Future<bool> isSignIn();
 
@@ -33,5 +33,5 @@ abstract class AuthRepo {
 
   Future<UserCredential?> signUpWithGoogle(BuildContext context);
 
-  Future<UserCredential?> signInWithGoogle();
+  Future<UserCredential?> signInWithGoogle(BuildContext context);
 }

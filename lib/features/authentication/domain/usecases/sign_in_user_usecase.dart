@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:homix/features/authentication/domain/entities/user_entity.dart';
 import 'package:homix/features/authentication/domain/repositories/auth_repo.dart';
 
@@ -6,7 +7,7 @@ class SignInUserUsecase {
 
   SignInUserUsecase({required this.repository});
 
-  Future<void> call(UserEntity user) {
-    return repository.signInUser(user);
+  Future<void> call(UserEntity user, BuildContext context) {
+    return repository.signInUser(user, context);
   }
 }

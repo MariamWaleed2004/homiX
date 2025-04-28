@@ -22,6 +22,19 @@ import 'package:homix/features/authentication/presentation/cubit/auth_cubit/auth
 import 'package:homix/features/authentication/presentation/cubit/credential_cubit/credential_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/get_single_user_cubit/get_single_user_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/user_cubit/user_cubit.dart';
+import 'package:homix/features/favorites/data/datasources/favorites_remote_data_source.dart';
+import 'package:homix/features/favorites/data/datasources/favorites_remote_data_source_impl.dart';
+import 'package:homix/features/favorites/data/repositories/favorites_repo_impl.dart';
+import 'package:homix/features/favorites/domain/repositories/favorites_repo.dart';
+import 'package:homix/features/favorites/domain/usecases/get_user_favorites_usecase.dart';
+import 'package:homix/features/favorites/domain/usecases/toggle_favorites_usecase.dart';
+import 'package:homix/features/favorites/presentation/cubit/favorites_cubit/favorites_cubit.dart';
+import 'package:homix/features/home/data/datasources/remote_data_sources/home_remote_data_source.dart';
+import 'package:homix/features/home/data/datasources/remote_data_sources/home_remote_data_source_impl.dart';
+import 'package:homix/features/home/data/repositories/home_repo_impl.dart';
+import 'package:homix/features/home/domain/repositories/home_repo.dart';
+import 'package:homix/features/home/domain/usecases/get_apartment_usecase.dart';
+import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -54,6 +67,17 @@ Future<void> init() async {
       getSingleUserUsecase: sl.call(),
      ));
 
+      sl.registerFactory(
+    () => PropertyCubit(
+      getApartmentUsecase: sl.call(),
+     ));
+
+       sl.registerFactory(
+    () => FavoritesCubit(
+      getUserFavoritesUsecase: sl.call(), 
+      toggleFavoritesUsecase: sl.call(), 
+     ));
+
 
  
   // Use Cases
@@ -67,7 +91,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => SignUpWithGoogleUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => SignInWithGoogleUsecase(repository: sl.call()));
-  //sl.registerLazySingleton(() => GetUsersUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetApartmentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => ToggleFavoritesUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetUserFavoritesUsecase(repository: sl.call()));
+
 
 
   // Cloud Storage
@@ -78,9 +105,13 @@ Future<void> init() async {
 
   // Repository
   sl.registerLazySingleton<AuthRepo>(() => AuthRepoImpl(authRemoteDataSource: sl.call()));
+  sl.registerLazySingleton<HomeRepo>(() => HomeRepoImpl(homeRemoteDataSource: sl.call()));
+  sl.registerLazySingleton<FavoritesRepo>(() => FavoritesRepoImpl(favoritesRemoteDataSource: sl.call()));
 
   //Remote Data Source
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(firebaseFirestore: sl.call(), firebaseAuth: sl.call(), firebaseStorage: sl.call()));
+  sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(firebaseFirestore: sl.call()));
+  sl.registerLazySingleton<FavoritesRemoteDataSource>(() => FavoritesRemoteDataSourceImpl(firebaseFirestore: sl.call()));
 
 
   // Externals

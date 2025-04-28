@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homix/core/const.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 
 class SubonboardingWidget3 extends StatelessWidget {
@@ -28,10 +29,11 @@ class SubonboardingWidget3 extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(25),
-                      child: Image.asset(
-                        'assets/photo7.png',
-                        fit: BoxFit.cover,
-                        ),
+                      child: Icon(PhosphorIconsRegular.upload, size: 250,),
+                      // Image.asset(
+                      //   'assets/photo7.png',
+                      //   fit: BoxFit.cover,
+                      //   ),
                     ),
                   ),
                 ),

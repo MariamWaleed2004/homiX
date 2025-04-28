@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:homix/core/const.dart';
 import 'package:homix/features/authentication/presentation/cubit/auth_cubit/auth_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/credential_cubit/credential_cubit.dart';
-import 'package:homix/features/home_screen/home_screen.dart';
+import 'package:homix/features/home/presentation/screens/home_screen.dart';
 import 'package:homix/features/onboarding_screen/presentation/screens/onboarding_screen.dart';
 import 'package:homix/main_screen.dart';
 import 'package:lottie/lottie.dart';

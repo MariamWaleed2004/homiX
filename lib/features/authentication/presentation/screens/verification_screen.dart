@@ -26,7 +26,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   void _startEmailVerificationCheck() {
     _emailVerificationTimer =
-        Timer.periodic(Duration(seconds: 3), (timer) async {
+      Timer.periodic(Duration(seconds: 3), (timer) async {
       User? user = FirebaseAuth.instance.currentUser;
       await user?.reload();
       user = FirebaseAuth.instance.currentUser;
@@ -53,9 +53,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
   }
 
 
-  Future? resendVerificationEmail()  {
-     currentUser!.sendEmailVerification;
+  Future<void> resendVerificationEmail() async {
+  try {
+    await currentUser!.sendEmailVerification();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Verification email sent!')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to send email: $e')),
+    );
   }
+}
+
 
 
 
@@ -66,6 +76,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
     double width = AppSizes.screenWidth(context);
     double height = AppSizes.screenHeight(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Verification Email"),
+      ),
       body: Center(
         child: isEmailVerified
             ? const Text("Email verified! Redirecting...")
