@@ -33,53 +33,44 @@ import 'package:homix/features/home/data/datasources/remote_data_sources/home_re
 import 'package:homix/features/home/data/datasources/remote_data_sources/home_remote_data_source_impl.dart';
 import 'package:homix/features/home/data/repositories/home_repo_impl.dart';
 import 'package:homix/features/home/domain/repositories/home_repo.dart';
-import 'package:homix/features/home/domain/usecases/get_apartment_usecase.dart';
+import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
 
 final sl = GetIt.instance;
 
-
 Future<void> init() async {
   // Cubits
-  sl.registerFactory(
-    () => AuthCubit(
-    signOutUserUsecase: sl.call(),
-    isSignInUsecase: sl.call(),
-    getCurrentUidUsecase: sl.call(),
-     ));
+  sl.registerFactory(() => AuthCubit(
+        signOutUserUsecase: sl.call(),
+        isSignInUsecase: sl.call(),
+        getCurrentUidUsecase: sl.call(),
+      ));
 
-     sl.registerFactory(
-    () => CredentialCubit(
-      signInUserUsecase: sl.call(),
-      signUpUserUsecase: sl.call(),
-      signUpWithGoogleUsecase: sl.call(),
-      signInWithGoogleUsecase: sl.call(),
-     ));
+  sl.registerFactory(() => CredentialCubit(
+        signInUserUsecase: sl.call(),
+        signUpUserUsecase: sl.call(),
+        signUpWithGoogleUsecase: sl.call(),
+        signInWithGoogleUsecase: sl.call(),
+      ));
 
-     sl.registerFactory(
-    () => UserCubit(
-      getUsersUsecase: sl.call(),
-      updateUserUsecase: sl.call(),
-     ));
+  sl.registerFactory(() => UserCubit(
+        getUsersUsecase: sl.call(),
+        updateUserUsecase: sl.call(),
+      ));
 
-      sl.registerFactory(
-    () => GetSingleUserCubit(
-      getSingleUserUsecase: sl.call(),
-     ));
+  sl.registerFactory(() => GetSingleUserCubit(
+        getSingleUserUsecase: sl.call(),
+      ));
 
-      sl.registerFactory(
-    () => PropertyCubit(
-      getApartmentUsecase: sl.call(),
-     ));
+  sl.registerFactory(() => PropertyCubit(
+        getPropertyUsecase: sl.call(),
+      ));
 
-       sl.registerFactory(
-    () => FavoritesCubit(
-      getUserFavoritesUsecase: sl.call(), 
-      toggleFavoritesUsecase: sl.call(), 
-     ));
+  sl.registerFactory(() => FavoritesCubit(
+        getUserFavoritesUsecase: sl.call(),
+        toggleFavoritesUsecase: sl.call(),
+      ));
 
-
- 
   // Use Cases
   sl.registerLazySingleton(() => SignOutUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => IsSignInUsecase(repository: sl.call()));
@@ -89,30 +80,36 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => CreateUserUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSingleUserUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => SignUpWithGoogleUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => SignInWithGoogleUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => GetApartmentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+      () => SignUpWithGoogleUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+      () => SignInWithGoogleUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetPropertyUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => ToggleFavoritesUsecase(repository: sl.call()));
-  sl.registerLazySingleton(() => GetUserFavoritesUsecase(repository: sl.call()));
-
-
+  sl.registerLazySingleton(
+      () => GetUserFavoritesUsecase(repository: sl.call()));
 
   // Cloud Storage
-  sl.registerLazySingleton(() => UploadImageToStorageUsecase(repository: sl.call()));
-  
-
-
+  sl.registerLazySingleton(
+      () => UploadImageToStorageUsecase(repository: sl.call()));
 
   // Repository
-  sl.registerLazySingleton<AuthRepo>(() => AuthRepoImpl(authRemoteDataSource: sl.call()));
-  sl.registerLazySingleton<HomeRepo>(() => HomeRepoImpl(homeRemoteDataSource: sl.call()));
-  sl.registerLazySingleton<FavoritesRepo>(() => FavoritesRepoImpl(favoritesRemoteDataSource: sl.call()));
+  sl.registerLazySingleton<AuthRepo>(
+      () => AuthRepoImpl(authRemoteDataSource: sl.call()));
+  sl.registerLazySingleton<HomeRepo>(
+      () => HomeRepoImpl(homeRemoteDataSource: sl.call()));
+  sl.registerLazySingleton<FavoritesRepo>(
+      () => FavoritesRepoImpl(favoritesRemoteDataSource: sl.call()));
 
   //Remote Data Source
-  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(firebaseFirestore: sl.call(), firebaseAuth: sl.call(), firebaseStorage: sl.call()));
-  sl.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(firebaseFirestore: sl.call()));
-  sl.registerLazySingleton<FavoritesRemoteDataSource>(() => FavoritesRemoteDataSourceImpl(firebaseFirestore: sl.call()));
-
+  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(
+      firebaseFirestore: sl.call(),
+      firebaseAuth: sl.call(),
+      firebaseStorage: sl.call()));
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+      () => HomeRemoteDataSourceImpl(firebaseFirestore: sl.call()));
+  sl.registerLazySingleton<FavoritesRemoteDataSource>(
+      () => FavoritesRemoteDataSourceImpl(firebaseFirestore: sl.call()));
 
   // Externals
   final firebaseFirestore = FirebaseFirestore.instance;

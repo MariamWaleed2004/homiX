@@ -14,6 +14,7 @@ class PropertyModel extends PropertyEntity {
     required super.areaSqft,
     required super.agentName,
     required super.overview,
+    required super.homeDisplay,
     super.rating,
     super.totalReviews,
   });
@@ -21,8 +22,10 @@ class PropertyModel extends PropertyEntity {
   factory PropertyModel.fromMap(Map<String, dynamic> map, String docId) {
     // print(
     //     "DEBUG: map['image'] = ${map['image']} (${map['image'].runtimeType})");
+    print("PropertyModel.fromMap: $map");
     return PropertyModel(
       id: docId,
+      homeDisplay: map['homeDisplay'] ?? '',
       title: map['title'] ?? '',
       category: map['category'] ?? '',
       location: map['location'] ?? '',
@@ -41,10 +44,10 @@ class PropertyModel extends PropertyEntity {
   }
 
   factory PropertyModel.fromFirestore(DocumentSnapshot doc) {
-  final data = doc.data() as Map<String, dynamic>;
-  return PropertyModel.fromMap(data, doc.id);
-}
+    final data = doc.data() as Map<String, dynamic>;
+    return PropertyModel.fromMap(data, doc.id);
+  }
 
-
-
+  @override
+  List<Object?> get props => [id];
 }

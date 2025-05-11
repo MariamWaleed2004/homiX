@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:homix/core/const.dart';
 import 'package:homix/features/authentication/presentation/cubit/auth_cubit/auth_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/get_single_user_cubit/get_single_user_cubit.dart';
 import 'package:homix/features/chat/presentation/screens/chat_screen.dart';
-import 'package:homix/features/favorites/presentation/cubit/screens/favorite_screen.dart';
+import 'package:homix/features/favorites/presentation/cubit/screens/favorites_screen.dart';
 import 'package:homix/features/home/data/datasources/remote_data_sources/home_remote_data_source_impl.dart';
 import 'package:homix/features/home/data/repositories/home_repo_impl.dart';
-import 'package:homix/features/home/domain/usecases/get_apartment_usecase.dart';
+import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
 import 'package:homix/features/home/presentation/screens/home_screen.dart';
 import 'package:homix/features/profile/presentation/screens/profile_screen.dart';
@@ -56,141 +57,114 @@ class _MainScreenState extends State<MainScreen> {
     bool isActive = _currentIndex == index;
 
     return BottomNavigationBarItem(
-        icon: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 26,
-              color:
-                  isActive ? CupertinoColors.black : CupertinoColors.systemGrey,
+      icon: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 8,
+          ),
+          Icon(
+            icon,
+            size: 26,
+            color:
+                isActive ? CupertinoColors.black : CupertinoColors.systemGrey,
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            height: 4,
+            width: 4,
+            decoration: BoxDecoration(
+              color: isActive ? CupertinoColors.black : Colors.transparent,
+              shape: BoxShape.circle,
             ),
-            SizedBox(
-              height: 4,
-            ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              height: 4,
-              width: 4,
-              decoration: BoxDecoration(
-                color: isActive ? CupertinoColors.black : Colors.transparent,
-                shape: BoxShape.circle,
-              ),
-            )
-          ],
-        ),
-        label: '');
+          )
+        ],
+      ),
+      //label: ''
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
-      builder: (context, getSingleUserState) {
-        if (getSingleUserState is GetSingleUserLoaded) {
-          final currentUser = getSingleUserState.user;
-          return CupertinoPageScaffold(
-              child: Stack(
-            children: [
-              PageView(
-                controller: pageController,
-                onPageChanged: onPageChanged,
-                children: [
-                  SearchScreen(),
-                  FavoriteScreen(),
-                  HomeScreen(),
-                  // BlocProvider(
-                  //   create: (context) => PropertyCubit(
-                  //     getApartmentUsecase: GetApartmentUsecase(
-                  //       repository: HomeRepoImpl(
-                  //         homeRemoteDataSource: HomeRemoteDataSourceImpl(
-                  //           firebaseFirestore: FirebaseFirestore.instance,)),
-                  //       )
-                  //   )..getProperties(),
-                  //   child: HomeScreen(),
-                  // ),
-                  ChatScreen(),
-                  ProfileScreen(),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: CupertinoTabBar(
-                  border: Border(),
-                  currentIndex: _currentIndex,
-                  onTap: _onTap,
-                  backgroundColor: Colors.grey[200],
-                  items: [
-                    buildTabTtem(PhosphorIconsRegular.magnifyingGlass, 0),
-                    buildTabTtem(PhosphorIconsRegular.heart, 1),
-                    buildTabTtem(PhosphorIconsRegular.house, 2),
-                    buildTabTtem(PhosphorIconsRegular.chatCircle, 3),
-                    buildTabTtem(PhosphorIconsRegular.user, 4),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey[200],
+        title: Text(
+          'HomiX',
+          style: GoogleFonts.poppins(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              PhosphorIcons.bell(PhosphorIconsStyle.fill),
+              color: Colors.black,
+              size: 26,
+            ),
+            onPressed: () {
+              // Handle notification button press
+            },
+          ),
+        ],
+      ),
+      body: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
+        builder: (context, getSingleUserState) {
+          if (getSingleUserState is GetSingleUserLoaded) {
+            final currentUser = getSingleUserState.user;
+            return CupertinoPageScaffold(
+                child: Stack(
+              children: [
+                PageView(
+                  controller: pageController,
+                  onPageChanged: onPageChanged,
+                  children: [
+                    SearchScreen(),
+                    FavoritesScreen(),
+                    HomeScreen(),
+                    // BlocProvider(
+                    //   create: (context) => PropertyCubit(
+                    //     getApartmentUsecase: GetApartmentUsecase(
+                    //       repository: HomeRepoImpl(
+                    //         homeRemoteDataSource: HomeRemoteDataSourceImpl(
+                    //           firebaseFirestore: FirebaseFirestore.instance,)),
+                    //       )
+                    //   )..getProperties(),
+                    //   child: HomeScreen(),
+                    // ),
+                    ChatScreen(),
+                    ProfileScreen(),
                   ],
                 ),
-              ),
-            ],
-          ));
-          // return Scaffold(
-          //   backgroundColor: Colors.white,
-          //   bottomNavigationBar: CupertinoTabBar(
-          //     border: Border(),
-          //     backgroundColor: Colors.white,
-          //     items: [
-          //       BottomNavigationBarItem(
-          //           icon: Icon(
-          //             PhosphorIconsRegular.magnifyingGlass, // outline version
-          //             size: 30,
-          //             color: Colors.black, // or any color you like
-          //           ),
-          //           label: ''),
-          //       BottomNavigationBarItem(
-          //           icon: Icon(
-          //             PhosphorIconsRegular.heart, // outline version
-          //             size: 30,
-          //             color: Colors.black, // or any color you like
-          //           ),
-          //           label: ''),
-          //       BottomNavigationBarItem(
-          //           icon: Icon(
-          //             PhosphorIconsRegular.house, // outline version
-          //             size: 30,
-          //             color: Colors.black, // or any color you like
-          //           ),
-          //           label: ''),
-          //       BottomNavigationBarItem(
-          //           icon: Icon(
-          //             PhosphorIconsRegular.chatCircle, // outline version
-          //             size: 30,
-          //             color: Colors.black, // or any color you like
-          //           ),
-          //           label: ''),
-          //       BottomNavigationBarItem(
-          //           icon: Icon(
-          //             PhosphorIconsRegular.user, // outline version
-          //             size: 30,
-          //             color: Colors.black, // or any color you like
-          //           ),
-          //           label: ''),
-          //     ],
-          //     onTap: navigationTapped,
-          //   ),
-          //   body: PageView(
-          //     controller: pageController,
-          //     children: [
-          // SearchScreen(),
-          // FavoriteScreen(),
-          // HomeScreen(),
-          // ChatScreen(),
-          // ProfileScreen(),
-          //     ],
-          //     onPageChanged: onPageChanged,
-          //   ),
-          // );
-        }
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: CupertinoTabBar(
+                    border: Border(),
+                    currentIndex: _currentIndex,
+                    onTap: _onTap,
+                    backgroundColor: Colors.grey[200],
+                    items: [
+                      buildTabTtem(PhosphorIconsRegular.magnifyingGlass, 0),
+                      buildTabTtem(PhosphorIconsRegular.heart, 1),
+                      buildTabTtem(PhosphorIconsRegular.house, 2),
+                      buildTabTtem(PhosphorIconsRegular.chatCircle, 3),
+                      buildTabTtem(PhosphorIconsRegular.user, 4),
+                    ],
+                  ),
+                ),
+              ],
+            ));
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
 
     // Center(

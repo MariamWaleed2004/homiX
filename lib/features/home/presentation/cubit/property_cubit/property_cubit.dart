@@ -2,25 +2,26 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:homix/features/home/domain/entities/property_entity.dart';
-import 'package:homix/features/home/domain/usecases/get_apartment_usecase.dart';
+import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 
 part 'property_state.dart';
 
 class PropertyCubit extends Cubit<PropertyState> {
-  final GetApartmentUsecase getApartmentUsecase;
+  final GetPropertyUsecase getPropertyUsecase;
 
-  PropertyCubit({required this.getApartmentUsecase}) : super(PropertyInitial());
+  PropertyCubit({required this.getPropertyUsecase}) : super(PropertyInitial());
 
   Future<void> getProperties() async {
     try {
       emit(PropertyLoading());
-      final properties = await getApartmentUsecase();
+      final properties = await getPropertyUsecase();
 
       final propertiesWithRating = await Future.wait(
         properties.map((property) async {
           final data = await getAverageRatingAndCount(property.id);
           return PropertyEntity(
             id: property.id,
+            homeDisplay: property.homeDisplay,
             title: property.title,
             category: property.category,
             location: property.location,

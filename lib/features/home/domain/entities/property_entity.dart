@@ -12,6 +12,7 @@ class PropertyEntity {
   final String areaSqft;
   final String agentName;
   final String overview;
+  final String homeDisplay;
 
   PropertyEntity(
       {required this.id,
@@ -25,8 +26,13 @@ class PropertyEntity {
       required this.areaSqft,
       required this.agentName,
       required this.overview,
+      required this.homeDisplay,
       this.rating,
       this.totalReviews,
-      t
+      
       });
+
+
+  @override
+  List<Object?> get props => [id];
 }

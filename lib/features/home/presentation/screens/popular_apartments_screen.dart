@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homix/core/const.dart';
 import 'package:homix/features/home/data/datasources/remote_data_sources/home_remote_data_source_impl.dart';
 import 'package:homix/features/home/data/repositories/home_repo_impl.dart';
-import 'package:homix/features/home/domain/usecases/get_apartment_usecase.dart';
+import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
-import 'package:homix/features/home/presentation/widgets/apartments_list_widget.dart';
+import 'package:homix/features/home/presentation/widgets/apartment_category_widget/apartments_list_widget.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class PopularApartmentsScreen extends StatefulWidget {

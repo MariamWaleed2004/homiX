@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homix/core/on_generate_route.dart';
 import 'package:homix/features/authentication/presentation/cubit/auth_cubit/auth_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/credential_cubit/credential_cubit.dart';
@@ -11,7 +12,7 @@ import 'package:homix/features/authentication/presentation/screens/sign_in_scree
 import 'package:homix/features/authentication/presentation/screens/sign_up_screen.dart';
 import 'package:homix/features/authentication/presentation/screens/verification_screen.dart';
 import 'package:homix/features/favorites/presentation/cubit/favorites_cubit/favorites_cubit.dart';
-import 'package:homix/features/home/domain/usecases/get_apartment_usecase.dart';
+import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
 import 'package:homix/main_screen.dart';
 import 'package:homix/navigatorKey.dart';
@@ -22,7 +23,12 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await di.init();
-  runApp(MyApp());
+  runApp(ScreenUtilInit(
+    designSize: Size(375, 812),
+    minTextAdapt: true,
+    splitScreenMode: true,
+    builder: (context, child) => MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

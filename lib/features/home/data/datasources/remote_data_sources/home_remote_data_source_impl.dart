@@ -3,17 +3,18 @@ import 'package:homix/features/home/data/datasources/remote_data_sources/home_re
 import 'package:homix/features/home/data/models/property_model.dart';
 import 'package:homix/features/home/domain/entities/property_entity.dart';
 
-class  HomeRemoteDataSourceImpl implements HomeRemoteDataSource{
+class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   final FirebaseFirestore firebaseFirestore;
 
   HomeRemoteDataSourceImpl({required this.firebaseFirestore});
 
   @override
-  Future<List<PropertyEntity>> getApartment() async {
+  Future<List<PropertyEntity>> getProperty() async {
     final snapshot = await firebaseFirestore.collection('Apartments').get();
-    return snapshot.docs.map((doc) => PropertyModel.fromMap(
-      doc.data(), doc.id))
-      .toList();
+    return snapshot.docs
+        .map((doc) => PropertyModel.fromMap(doc.data(), doc.id))
+        .toList();
   }
-  
+
+
 }

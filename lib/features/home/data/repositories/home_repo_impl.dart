@@ -17,8 +17,10 @@ class HomeRepoImpl implements HomeRepo {
   HomeRepoImpl({required this.homeRemoteDataSource});
 
   @override
-  Future<List<PropertyEntity>> getApartment() 
-  => homeRemoteDataSource.getApartment();
+  Future<List<PropertyEntity>> getProperty() 
+  => homeRemoteDataSource.getProperty();
+
+ 
     
  
 

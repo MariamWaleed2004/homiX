@@ -2,54 +2,73 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:homix/features/favorites/data/datasources/favorites_remote_data_source.dart';
 import 'package:homix/features/home/data/models/property_model.dart';
 
-class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource{
+class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
   final FirebaseFirestore firebaseFirestore;
 
   FavoritesRemoteDataSourceImpl({required this.firebaseFirestore});
 
-
   @override
   Future<void> toggleFavorites(String userId, String propertyId) async {
-    final userRef = firebaseFirestore.collection('favorites').doc(userId);
+    //print("2222222222222222222222");
+    final favRef = firebaseFirestore
+        .collection('users')
+        .doc(userId)
+        .collection('favorites')
+        .doc(propertyId);
 
-    await firebaseFirestore.runTransaction((transaction) async {
-      final userDoc = await transaction.get(userRef);
-      if (!userDoc.exists) {
-        transaction.set(userRef, {'favorites': [propertyId]});
-      } else {
-        final favorites = List<String>.from(userDoc['favorites']);
-        if (favorites.contains(propertyId)) {
-          favorites.remove(propertyId);
-        } else {
-          favorites.add(propertyId);
-        }
-        transaction.update(userRef, {'favorites': favorites});
-      }
-    });
+    final doc = await favRef.get();
+
+    if (doc.exists) {
+      await favRef.delete();
+    } else {
+      await favRef.set({'favorited': true});
+    }
   }
 
+  // @override
+  // Future<void> toggleFavorites(String userId, String propertyId) async {
+  //   final userRef = firebaseFirestore.collection('users').doc(userId);
+  //   final favoritesRef = userRef.collection('favorites').doc(propertyId);
 
-Future<List<PropertyModel>> getUserFavorites(String userId) async {
-  final favDoc = await firebaseFirestore.collection('favorites').doc(userId).get();
+  //   await firebaseFirestore.runTransaction((transaction) async {
+  //     final userDoc = await transaction.get(userRef);
+  //     if (!userDoc.exists) {
 
-  if (!favDoc.exists || favDoc.data() == null) return [];
+  //       transaction.set(userRef, {});
+  //     }
 
-  final favIds = List<String>.from(favDoc.data()!['favorites'] ?? []);
+  //     final favoriteDoc = await transaction.get(favoritesRef);
 
-  if (favIds.isEmpty) return [];
+  //     if (!favoriteDoc.exists) {
 
-  final querySnapshot = await firebaseFirestore
-      .collection('properties')
-      .where(FieldPath.documentId, whereIn: favIds)
-      .get();
+  //       transaction.set(favoritesRef, {'favorited': true});
+  //     } else {
 
-  return querySnapshot.docs
-      .map((doc) => PropertyModel.fromMap(doc.data(), doc.id))
-      .toList();
+  //       transaction.delete(favoritesRef);
+  //     }
+  //   });
+  // }
+
+  @override
+  Future<List<PropertyModel>> getUserFavorites(String userId) async {
+    final favCollection = await firebaseFirestore
+        .collection('users')
+        .doc(userId)
+        .collection('favorites')
+        .get();
+
+    if (favCollection.docs.isEmpty) return [];
+
+    final favIds = favCollection.docs.map((doc) => doc.id).toList();
+
+    final querySnapshot = await firebaseFirestore
+        .collection('Apartments')
+        .where(FieldPath.documentId, whereIn: favIds)
+        .get();
+
+   
+    return querySnapshot.docs
+        .map((doc) => PropertyModel.fromMap(doc.data(), doc.id))
+        .toList();
+  }
 }
-
-
-
-}
-
-
