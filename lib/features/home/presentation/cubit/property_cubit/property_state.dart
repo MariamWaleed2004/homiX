@@ -22,7 +22,7 @@ final class PropertyLoaded extends PropertyState {
   PropertyLoaded({required this.properties});
 
     @override
-  List<Object> get props => [];
+  List<Object> get props => [properties];
 }
 
 final class PropertyFailure extends PropertyState {

@@ -14,44 +14,41 @@ class AuthCubit extends Cubit<AuthState> {
   final GetCurrentUidUsecase getCurrentUidUsecase;
 
   AuthCubit({
-      required this.signOutUserUsecase, 
-      required this.isSignInUsecase, 
-      required this.getCurrentUidUsecase,
-      }) : super(AuthInitial());
+    required this.signOutUserUsecase,
+    required this.isSignInUsecase,
+    required this.getCurrentUidUsecase,
+  }) : super(AuthInitial());
 
-      Future<void> appStarted(BuildContext context) async {
-        try {
-          bool isSignIn = await isSignInUsecase.call();
-          if(isSignIn == true) {
-            final uid = await getCurrentUidUsecase.call();
-            emit(Authenticated(uid: uid));
-          } else {
-            emit(UnAuthenticated());
-          }
-        } catch (_) {
-          emit(UnAuthenticated());   
-          }
+  Future<void> appStarted(BuildContext context) async {
+    try {
+      bool isSignIn = await isSignInUsecase.call();
+      if (isSignIn == true) {
+        final uid = await getCurrentUidUsecase.call();
+        emit(Authenticated(uid: uid));
+      } else {
+        emit(UnAuthenticated());
       }
+    } catch (_) {
+      emit(UnAuthenticated());
+    }
+  }
 
+  Future<void> loggedIn() async {
+    try {
+      final uid = await getCurrentUidUsecase.call();
+      emit(Authenticated(uid: uid));
+    } catch (_) {
+      toast("Invalid email or password");
+      emit(UnAuthenticated());
+    }
+  }
 
-      Future<void> loggedIn() async {
-        try {
-          final uid = await getCurrentUidUsecase.call();
-          emit(Authenticated(uid: uid));
-        } catch (_) {
-          toast("Invalid email or password");
-          emit(UnAuthenticated());
-        }
-      }
-
-
-      Future<void> loggedOut() async {
-        try {
-          await signOutUserUsecase.call();
-          emit(UnAuthenticated());
-        } catch (_) {
-          emit(UnAuthenticated());
-        }
-      }
-
+  Future<void> loggedOut() async {
+    try {
+      await signOutUserUsecase.call();
+      emit(UnAuthenticated());
+    } catch (_) {
+      emit(UnAuthenticated());
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homix/core/const.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
+import 'package:homix/features/home/presentation/widgets/land_category_widget.dart/land_loading_state_widget.dart';
 import 'package:homix/features/home/presentation/widgets/land_category_widget.dart/lands_categories_widget.dart';
 import 'package:homix/features/home/presentation/widgets/land_category_widget.dart/nearby_lands_widget.dart';
 
@@ -15,8 +16,13 @@ class LandWidget extends StatelessWidget {
     return BlocConsumer<PropertyCubit, PropertyState>(
       listener: (context, propertyState) {},
       builder: (context, propertyState) {
-        if (propertyState is PropertyLoading) {
-        } else if (propertyState is PropertyLoaded) {
+        // ----------------------------------------------- Loading State ----------------------------------------------------
+        if (propertyState is PropertyLoading)
+          {return LandLoadingStateWidget();}
+
+        // ----------------------------------------------- Loaded State ----------------------------------------------------
+
+        else if (propertyState is PropertyLoaded) {
           final nearbyLands = propertyState.properties
               .where((land) => land.category == "land")
               .toList();

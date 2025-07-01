@@ -35,6 +35,7 @@ import 'package:homix/features/home/data/repositories/home_repo_impl.dart';
 import 'package:homix/features/home/domain/repositories/home_repo.dart';
 import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
+import 'package:homix/features/search/presentation/cubit/search_cubit/search_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -70,6 +71,8 @@ Future<void> init() async {
         getUserFavoritesUsecase: sl.call(),
         toggleFavoritesUsecase: sl.call(),
       ));
+
+  sl.registerFactory(() => SearchCubit());
 
   // Use Cases
   sl.registerLazySingleton(() => SignOutUserUsecase(repository: sl.call()));

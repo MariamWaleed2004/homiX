@@ -14,170 +14,173 @@ class RecommendVillasWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = AppSizes.screenWidth(context);
+    double height = AppSizes.screenHeight(context);
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Recommend for you",
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    "View All",
-                    style: TextStyle(color: Colors.grey[500]),
-                  ))
-            ],
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+        child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+          "Recommend for you",
+          style: TextStyle(
+            fontSize: width * 0.05,
+            fontWeight: FontWeight.bold,
           ),
+          ),
+          TextButton(
+            onPressed: () {},
+            child: Text(
+            "View All",
+            style: TextStyle(color: Colors.grey[500]),
+            ))
+        ],
         ),
-        SizedBox(
-          height: 10.h,
-        ),
-        ...villa.map(
-          (villa) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Container(
-              margin: EdgeInsets.only(bottom: 10.h),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(20.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 3.r,
-                    offset: Offset(0, 5.h),
+      ),
+      SizedBox(
+        height: height * 0.012,
+      ),
+      ...villa.map(
+        (villa) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+        child: Container(
+          margin: EdgeInsets.only(bottom: height * 0.012),
+          decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(width * 0.05),
+          boxShadow: [
+            BoxShadow(
+            color: Colors.black12,
+            blurRadius: width * 0.008,
+            offset: Offset(0, height * 0.006),
+            ),
+          ],
+          ),
+          child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: height * 0.012, horizontal: width * 0.013),
+          child: Row(
+            children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(width * 0.05),
+              child: SizedBox(
+              height: height * 0.12,
+              width: width * 0.21,
+              child: Image.network(
+                villa.image[0],
+                width: width * 0.42,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                  color: Colors.white,
+                  width: width * 0.21,
+                  height: height * 0.12,
                   ),
-                ],
+                );
+                },
               ),
+              ),
+            ),
+            SizedBox(
+              width: width * 0.03,
+            ),
+            Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
-                child: Row(
+              padding: EdgeInsets.only(right: width * 0.026),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(
+                  villa.title,
+                  style: TextStyle(
+                  fontSize: width * 0.045,
+                  fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  villa.location,
+                  style: TextStyle(
+                  fontSize: width * 0.032,
+                  color: Colors.grey,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: SizedBox(
-                        height: 100.h,
-                        width: 80.w,
-                        child: Image.network(
-                          villa.image[0],
-                          width: 160.w,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            }
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: Container(
-                                color: Colors.white,
-                                width: 80.w,
-                                height: 100.h,
-                              ),
-                            );
-                          },
-                        ),
+                  Row(
+                    children: [
+                    Icon(
+                      Icons.star,
+                      size: width * 0.043,
+                    ),
+                    Text(
+                      villa.rating.toString(),
+                      style: TextStyle(
+                      fontSize: width * 0.03,
+                      fontWeight: FontWeight.w500,
                       ),
                     ),
                     SizedBox(
-                      width: 12.w,
+                      width: width * 0.01,
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 10.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              villa.title,
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              villa.location,
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.star,
-                                      size: 17.sp,
-                                    ),
-                                    Text(
-                                      villa.rating.toString(),
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 4.w,
-                                    ),
-                                    Text(
-                                      "(${villa.totalReviews.toString()} reviews)",
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                BlocBuilder<FavoritesCubit, FavoritesState>(
-                                  builder: (context, state) {
-                                    final isFavorite =
-                                        state is FavoritesLoaded &&
-                                            state.favorites.any((p) {
-                                              return p.id == villa.id;
-                                            });
-
-                                    return IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                      ),
-                                      onPressed: () {
-                                        final user =
-                                            FirebaseAuth.instance.currentUser;
-                                        if (user == null) {
-                                          return toast("User is null");
-                                        }
-
-                                        context
-                                            .read<FavoritesCubit>()
-                                            .toggleFavoriteStatus(
-                                                user.uid, villa.id);
-                                      },
-                                    );
-                                  },
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
+                    Text(
+                      "(${villa.totalReviews.toString()} reviews)",
+                      style: TextStyle(
+                      fontSize: width * 0.03,
+                      fontWeight: FontWeight.w500,
                       ),
-                    )
+                    ),
+                    ],
+                  ),
+                  BlocBuilder<FavoritesCubit, FavoritesState>(
+                    builder: (context, state) {
+                    final isFavorite =
+                      state is FavoritesLoaded &&
+                        state.favorites.any((p) {
+                          return p.id == villa.id;
+                        });
+
+                    return IconButton(
+                      icon: Icon(
+                      isFavorite
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                      ),
+                      onPressed: () {
+                      final user =
+                        FirebaseAuth.instance.currentUser;
+                      if (user == null) {
+                        return toast("User is null");
+                      }
+
+                      context
+                        .read<FavoritesCubit>()
+                        .toggleFavoriteStatus(
+                          user.uid, villa.id);
+                      },
+                    );
+                    },
+                  )
                   ],
                 ),
+                ],
               ),
-            ),
+              ),
+            )
+            ],
+          ),
           ),
         ),
+        ),
+      ),
       ],
     );
   }

@@ -13,203 +13,190 @@ class BestVillasWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = AppSizes.screenWidth(context);
+    double height = AppSizes.screenHeight(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.all(20.r),
-          child: Text(
-            "Best Villas",
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+      Padding(
+        padding: EdgeInsets.all(width * 0.05),
+        child: Text(
+        "Best Villas",
+        style: TextStyle(
+          fontSize: width * 0.05,
+          fontWeight: FontWeight.bold,
         ),
-        SizedBox(
-          height: 10.h,
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Padding(
-            padding: EdgeInsets.only(left: 12.w),
-            child: Row(
+      ),
+      SizedBox(
+        height: height * 0.012,
+      ),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Padding(
+        padding: EdgeInsets.only(left: width * 0.03),
+        child: Row(
+          children: [
+          ...villa.map((villa) => Container(
+              margin: EdgeInsets.only(right: width * 0.03),
+              child: Stack(
               children: [
-                ...villa.map((villa) => Container(
-                      margin: EdgeInsets.only(right: 12.w),
-                      child: Stack(
+                ClipRRect(
+                borderRadius: BorderRadius.circular(width * 0.05),
+                child: SizedBox(
+                  height: height * 0.25,
+                  width: width * 0.65,
+                  child: Image.network(
+                  villa.image[0],
+                  width: width * 0.41,
+                  fit: BoxFit.cover,
+                  loadingBuilder:
+                    (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                    return child;
+                    }
+                    return Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      color: Colors.white,
+                      width: width * 0.41,
+                      height: height * 0.25,
+                    ),
+                    );
+                  },
+                  ),
+                ),
+                ),
+                Positioned(
+                top: height * 0.0125,
+                right: width * 0.025,
+                child: Container(
+                  height: height * 0.044,
+                  width: width * 0.09,
+                  decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(width * 0.05),
+                  ),
+                  child:
+                    BlocBuilder<FavoritesCubit, FavoritesState>(
+                  builder: (context, state) {
+                    final isFavorite = state is FavoritesLoaded &&
+                      state.favorites.any((p) {
+                      return p.id == villa.id;
+                      });
+
+                    return IconButton(
+                    icon: Icon(
+                      isFavorite
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    ),
+                    onPressed: () {
+                      final user =
+                        FirebaseAuth.instance.currentUser;
+                      if (user == null) {
+                      return toast("User is null");
+                      }
+
+                      // مرّري بيانات الشقة كلها مش بس الـ id
+                      context
+                        .read<FavoritesCubit>()
+                        .toggleFavoriteStatus(
+                          user.uid, villa.id);
+                    },
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    );
+                  },
+                  ),
+                ),
+                ),
+                Positioned(
+                bottom: height * 0.0125,
+                left: width * 0.01,
+                right: width * 0.01,
+                child: Container(
+                  decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.black54, Colors.transparent],
+                  ),
+                  borderRadius: BorderRadius.circular(width * 0.05),
+                  ),
+                  child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.025, vertical: height * 0.0125),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Row(
+                      mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                      children: [
+                      Text(villa.title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: width * 0.04,
+                          fontWeight: FontWeight.bold,
+                        )),
+                      Text("\$${villa.price}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: width * 0.04,
+                          fontWeight: FontWeight.bold,
+                        )),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                      children: [
+                      Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20.r),
-                            child: SizedBox(
-                              height: 200.h,
-                              width: 260.w,
-                              child: Image.network(
-                                villa.image[0],
-                                width: 160.w,
-                                fit: BoxFit.cover,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Shimmer.fromColors(
-                                    baseColor: Colors.grey.shade300,
-                                    highlightColor: Colors.grey.shade100,
-                                    child: Container(
-                                      color: Colors.white,
-                                      width: 160.w,
-                                      height: 200.h,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 10.h,
-                            right: 10.w,
-                            child: Container(
-                              height: 35.h,
-                              width: 35.w,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                              child:
-                                  BlocBuilder<FavoritesCubit, FavoritesState>(
-                                builder: (context, state) {
-                                  final isFavorite = state is FavoritesLoaded &&
-                                      state.favorites.any((p) {
-                                        return p.id == villa.id;
-                                      });
-
-                                  return IconButton(
-                                    icon: Icon(
-                                      isFavorite
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                    ),
-                                    onPressed: () {
-                                      final user =
-                                          FirebaseAuth.instance.currentUser;
-                                      if (user == null) {
-                                        return toast("User is null");
-                                      }
-
-                                      // مرّري بيانات الشقة كلها مش بس الـ id
-                                      context
-                                          .read<FavoritesCubit>()
-                                          .toggleFavoriteStatus(
-                                              user.uid, villa.id);
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 10.h,
-                            left: 4.w,
-                            right: 4.w,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: [Colors.black54, Colors.transparent],
-                                ),
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w, vertical: 10.h),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(villa.title,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                        Text("\$${villa.price}",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(Icons.location_on,
-                                                size: 12.sp,
-                                                color: Colors.white),
-                                            Text(villa.location,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12.sp,
-                                                )),
-                                          ],
-                                        ),
-                                        // Text(villa.location,
-                                        // style: TextStyle(
-                                        //   color: Colors.white,
-                                        //   fontSize: 12,
-                                        // )),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.star,
-                                              size: 16.sp,
-                                              color: Colors.yellow,
-                                            ),
-                                            Text(
-                                              villa.rating.toString(),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10.sp,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            SizedBox(width: 4.w)
-
-                                            // Text(
-                                            //   "(${villa.totalReviews.toString()} reviews)",
-                                            //   style: TextStyle(
-                                            //     color: Colors.white,
-                                            //     fontSize: 10,
-                                            //     fontWeight:
-                                            //         FontWeight.w500,
-                                            //   ),
-                                            // ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                        Icon(Icons.location_on,
+                          size: width * 0.03,
+                          color: Colors.white),
+                        Text(villa.location,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.03,
+                          )),
                         ],
                       ),
-                    ))
+                      Row(
+                        children: [
+                        Icon(
+                          Icons.star,
+                          size: width * 0.04,
+                          color: Colors.yellow,
+                        ),
+                        Text(
+                          villa.rating.toString(),
+                          style: TextStyle(
+                          color: Colors.white,
+                          fontSize: width * 0.025,
+                          fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(width: width * 0.01)
+                        ],
+                      )
+                      ],
+                    ),
+                    ],
+                  ),
+                  ),
+                ),
+                ),
               ],
-            ),
-          ),
+              ),
+            ))
+          ],
         ),
+        ),
+      ),
       ],
     );
   }

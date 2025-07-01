@@ -14,6 +14,7 @@ import 'package:homix/features/authentication/presentation/screens/verification_
 import 'package:homix/features/favorites/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
+import 'package:homix/features/search/presentation/cubit/search_cubit/search_cubit.dart';
 import 'package:homix/main_screen.dart';
 import 'package:homix/navigatorKey.dart';
 import 'package:homix/splash_screen.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
         BlocProvider(create: (_) => di.sl<PropertyCubit>()),
         BlocProvider(create: (_) => di.sl<FavoritesCubit>()),
+        BlocProvider(create: (_) => di.sl<SearchCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

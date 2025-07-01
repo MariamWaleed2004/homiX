@@ -9,7 +9,6 @@ class UserEntity extends Equatable {
   final String? password;
   final String? confirmPassword;
 
-
   UserEntity({
     this.uid,
     this.name,

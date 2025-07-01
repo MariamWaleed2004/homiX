@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homix/core/const.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LandsCategoriesWidget extends StatelessWidget {
   const LandsCategoriesWidget({super.key});
@@ -65,7 +66,7 @@ class LandsCategoriesWidget extends StatelessWidget {
                   width: 1,
                 ),
                 image: DecorationImage(
-                  image: AssetImage("assets/lands/lands.jpg"),
+                  image: AssetImage("assets/lands/lands_Category_1.jpg"),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                       Color.fromRGBO(0, 0, 0, 0.3), BlendMode.darken),
@@ -89,8 +90,6 @@ class LandsCategoriesWidget extends StatelessWidget {
                       color: const Color.fromARGB(255, 50, 49, 49),
                       borderRadius: BorderRadius.circular(width * 0.08),
                     ),
-                    //height: height * 0.05,
-                    //width: width * 0.5,
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: width * 0.04, vertical: height * 0.007),
@@ -135,7 +134,7 @@ class LandsCategoriesWidget extends StatelessWidget {
                         width: 1,
                       ),
                       image: DecorationImage(
-                        image: AssetImage("assets/lands/lands2.webp"),
+                        image: AssetImage("assets/lands/lands_Category_2.webp"),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                             Color.fromRGBO(0, 0, 0, 0.3), BlendMode.darken),
@@ -206,7 +205,7 @@ class LandsCategoriesWidget extends StatelessWidget {
                         width: 1,
                       ),
                       image: DecorationImage(
-                        image: AssetImage("assets/lands/lands4.jpg"),
+                        image: AssetImage("assets/lands/lands_Category_3.jpg"),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                             Color.fromRGBO(0, 0, 0, 0.3), BlendMode.darken),

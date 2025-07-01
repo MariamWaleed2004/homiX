@@ -8,6 +8,7 @@ import 'package:homix/core/injection_container.dart' as di;
 import 'package:homix/features/favorites/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:homix/features/home/presentation/cubit/property_cubit/property_cubit.dart';
 import 'package:homix/features/home/presentation/widgets/apartment_category_widget/apartments_widget.dart';
+import 'package:homix/features/home/presentation/widgets/land_category_widget.dart/land_loading_state_widget.dart';
 import 'package:homix/features/home/presentation/widgets/land_category_widget.dart/land_widget.dart';
 import 'package:homix/features/home/presentation/widgets/real_estate_button.dart';
 import 'package:homix/features/home/presentation/widgets/villa_category_widgets/villas_widget.dart';
@@ -32,12 +33,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int selectedIndex = 0;
-  RealEstateType selectedType = RealEstateType.land;
-
-  TextEditingController _searchController = TextEditingController();
-  List<DocumentSnapshot> _searchResults = [];
   final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  // int selectedInex = 0;
+  RealEstateType selectedType = RealEstateType.apartment;
+
   Widget _getSelectedWidget() {
     switch (selectedType) {
       case RealEstateType.apartment:
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case RealEstateType.land:
         return LandWidget();
       case RealEstateType.office:
-        return Text("Office");
+        return LandLoadingStateWidget();
       case RealEstateType.townhouse:
         return Text("Townhouse");
       case RealEstateType.duplexes:
@@ -76,35 +76,43 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
+              padding: EdgeInsets.symmetric(
+                horizontal: width * 0.04,
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    prefixIcon: Icon(
-                      PhosphorIconsRegular.magnifyingGlass,
-                      color: Colors.black,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, ScreenConst.searchScreen);
+                },
+                child: AbsorbPointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(width * 0.08),
                     ),
-                    border: InputBorder.none,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search...',
+                        prefixIcon: Icon(
+                          PhosphorIconsRegular.magnifyingGlass,
+                          color: Colors.black,
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: width * 0.042,
+                            vertical: height * 0.017),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
             SizedBox(height: height * 0.03),
             Padding(
-              padding: const EdgeInsets.only(left: 12),
+              padding: EdgeInsets.only(left: width * 0.032),
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Wrap(
-                    spacing: 10,
+                    spacing: width * 0.026,
                     children: [
                       RealEstateButton(
                           icon: Icons.home,

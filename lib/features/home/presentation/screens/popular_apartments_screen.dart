@@ -18,30 +18,26 @@ class PopularApartmentsScreen extends StatefulWidget {
       _PopularApartmentsScreenState();
 }
 
-
-
-
-
 class _PopularApartmentsScreenState extends State<PopularApartmentsScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     double width = AppSizes.screenWidth(context);
     double height = AppSizes.screenHeight(context);
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
+              padding: EdgeInsets.symmetric(
+                horizontal: width * 0.04, // 15/375 ≈ 0.04 for typical width
               ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius:
+                      BorderRadius.circular(width * 0.08), // 30/375 ≈ 0.08
                 ),
                 child: TextField(
                   decoration: InputDecoration(
@@ -51,8 +47,10 @@ class _PopularApartmentsScreenState extends State<PopularApartmentsScreen> {
                       color: Colors.black,
                     ),
                     border: InputBorder.none,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: width * 0.043, // 16/375 ≈ 0.043
+                      vertical: height * 0.017, // 14/812 ≈ 0.017
+                    ),
                   ),
                 ),
               ),
@@ -61,7 +59,7 @@ class _PopularApartmentsScreenState extends State<PopularApartmentsScreen> {
               height: height * 0.02,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: EdgeInsets.symmetric(horizontal: width * 0.04),
               child: ApartmentsListWidget(),
             ),
           ],

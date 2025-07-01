@@ -24,6 +24,8 @@ class ScreenConst {
   static const String forgotPasswordScreen = 'forgotPasswordScreen';
   static const String PopularApartmentsScreen = 'popularApartmentsScreen';
   static const String PropertyDetailsScreen = 'propertyDetailsScreen';
+  static const String searchScreen = 'searchScreen';
+  static const String personalInformationScreen = 'personalInformationScreen';
 
 
 }

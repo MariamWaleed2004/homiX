@@ -207,11 +207,15 @@ class _ApartmentsWidgetState extends State<ApartmentsWidget> {
                     SizedBox(
                       height: height * 0.03,
                     ),
+             // ------------------------------     GridApartmentsCategoriesWidget      ---------------------------------------------
+
                     GridApartmentsCategoriesWidget(),
                   ],
                 ),
               ),
             );
+            // ------------------------------    Failure State    ---------------------------------------------
+            
           } else if (propertyState is PropertyFailure) {
             return Center(child: Text(propertyState.errorMessage));
           }

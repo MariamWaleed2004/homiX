@@ -173,7 +173,7 @@ class _MostPopularApartmentWidgetState
                                         apartment.title,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: width * 0.05,
+                                          fontSize: width * 0.045,
                                         ),
                                       ),
                                       Row(

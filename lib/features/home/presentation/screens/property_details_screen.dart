@@ -64,22 +64,23 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                 return Icon(
                                   Icons.error,
                                   color: Colors.red,
+                                  size: width * 0.08,
                                 );
                               },
                             );
                           },
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                          padding: EdgeInsets.only(bottom: height * 0.01),
                           child: SmoothPageIndicator(
                             controller: _pageController,
                             count: widget.property.image.length,
                             effect: WormEffect(
-                              dotHeight: 6,
-                              dotWidth: 6,
+                              dotHeight: height * 0.008,
+                              dotWidth: width * 0.015,
                               activeDotColor: Colors.white,
                               dotColor: Colors.grey,
-                              spacing: 4,
+                              spacing: width * 0.01,
                             ),
                           ),
                         )
@@ -87,15 +88,15 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.012),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           widget.property.category,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: width * 0.05,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -103,12 +104,12 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                           children: [
                             Icon(
                               Icons.star,
-                              size: 20,
+                              size: width * 0.045,
                             ),
                             Text(
                               widget.property.rating.toString(),
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: width * 0.037,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -118,7 +119,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             Text(
                               "(${widget.property.totalReviews.toString()} reviews)",
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: width * 0.037,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -128,36 +129,37 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.006),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         widget.property.title,
                         style: TextStyle(
-                          fontSize: 27,
+                          fontSize: width * 0.07,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.04,
                     ),
                     child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
                           widget.property.location,
-                          style: TextStyle(color: Colors.grey[700]),
+                          style: TextStyle(
+                              color: Colors.grey[700], fontSize: width * 0.037),
                         )),
                   ),
                   SizedBox(
                     height: height * 0.01,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.012),
                     child: Row(
                       children: [
                         Flexible(
@@ -167,11 +169,12 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius:
+                                        BorderRadius.circular(width * 0.013),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(3),
-                                    child: Icon(Icons.bed),
+                                    padding: EdgeInsets.all(width * 0.008),
+                                    child: Icon(Icons.bed, size: width * 0.05),
                                   )),
                               SizedBox(
                                 width: width * 0.01,
@@ -179,7 +182,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               Text(
                                 "${widget.property.rooms} Rooms",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: width * 0.037,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -193,11 +196,13 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius:
+                                        BorderRadius.circular(width * 0.013),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(3),
-                                    child: Icon(Icons.shower),
+                                    padding: EdgeInsets.all(width * 0.008),
+                                    child:
+                                        Icon(Icons.shower, size: width * 0.05),
                                   )),
                               SizedBox(
                                 width: width * 0.01,
@@ -205,7 +210,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               Text(
                                 "${widget.property.bathrooms} Bath",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: width * 0.037,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -219,12 +224,15 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius:
+                                        BorderRadius.circular(width * 0.013),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(3),
-                                    child:
-                                        Icon(PhosphorIconsRegular.boundingBox),
+                                    padding: EdgeInsets.all(width * 0.008),
+                                    child: Icon(
+                                      PhosphorIconsRegular.boundingBox,
+                                      size: width * 0.05,
+                                    ),
                                   )),
                               SizedBox(
                                 width: width * 0.01,
@@ -232,7 +240,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               Text(
                                 "${widget.property.areaSqft} Sqft",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: width * 0.037,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -243,38 +251,40 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.006),
                     child: Divider(
                       color: Colors.grey,
                       thickness: 1,
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.04),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Listing Agents",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: width * 0.05,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.012),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
                             Container(
-                              height: height * 0.06,
+                              height: width * 0.14,
                               width: width * 0.14,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(35)),
+                                  borderRadius:
+                                      BorderRadius.circular(width * 0.09)),
                             ),
                             SizedBox(
                               width: width * 0.03,
@@ -282,7 +292,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             Text(
                               widget.property.agentName,
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: width * 0.042,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -291,13 +302,14 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius:
+                                    BorderRadius.circular(width * 0.04),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(5),
+                                padding: EdgeInsets.all(width * 0.013),
                                 child: Icon(
                                   PhosphorIconsRegular.chatCircleDots,
-                                  size: 32,
+                                  size: width * 0.08,
                                 ),
                               ),
                             ),
@@ -307,13 +319,14 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius:
+                                    BorderRadius.circular(width * 0.04),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(5),
+                                padding: EdgeInsets.all(width * 0.013),
                                 child: Icon(
                                   Icons.call,
-                                  size: 30,
+                                  size: width * 0.075,
                                 ),
                               ),
                             ),
@@ -323,31 +336,33 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.012),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Overview",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: width * 0.045,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.006),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         widget.property.overview,
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                        style: TextStyle(
+                            fontSize: width * 0.037, color: Colors.grey),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04, vertical: height * 0.012),
                     child: TextButton(
                       onPressed: () {},
                       child: Container(
@@ -356,11 +371,13 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                           children: [
                             Text(
                               "See on maps",
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: width * 0.04),
                             ),
                             Icon(
                               Icons.arrow_forward,
                               color: Colors.black,
+                              size: width * 0.06,
                             )
                           ],
                         ),
@@ -375,7 +392,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
             return Center(
               child: Text(
                 propertyState.errorMessage,
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Colors.red, fontSize: width * 0.045),
               ),
             );
           }
@@ -391,7 +408,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
         ))),
         height: height * 0.1,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: EdgeInsets.symmetric(
+              horizontal: width * 0.04, vertical: height * 0.012),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -400,11 +418,12 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                 children: [
                   Text(
                     "Price",
-                    style: TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: width * 0.037),
                   ),
                   Text(
                     "\$${widget.property.price.toString()}",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: width * 0.07, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -413,14 +432,14 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(width * 0.04),
                     ),
-                    minimumSize: Size(180, 50),
+                    minimumSize: Size(width * 0.45, height * 0.06),
                   ),
                   onPressed: () {},
                   child: Text(
                     "Buy Now",
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: width * 0.045),
                   ))
             ],
           ),

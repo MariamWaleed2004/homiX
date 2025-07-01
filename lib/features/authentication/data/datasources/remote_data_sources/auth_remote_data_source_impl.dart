@@ -82,24 +82,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> signInUser(UserEntity user, BuildContext context) async {
     try {
-
-      final existingUser = await firebaseFirestore
-        .collection("users")
-        .where("email", isEqualTo: user.email)
-        .get();
-
-    if (existingUser.docs.isEmpty) {
-       _showIfAccountNotExistsDialog(context);
-    } else {
-      await firebaseAuth.signInWithEmailAndPassword(
+      final methods =
+          await firebaseAuth.fetchSignInMethodsForEmail(user.email!);
+      if (methods.isEmpty) {
+        _showIfAccountNotExistsDialog(context);
+      } else {
+        await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
-    } 
-    
-
+      }
     } on FirebaseAuthException catch (e) {
-      
-     if (e.code == "wrong-password") {
-
+      if (e.code == "wrong-password") {
         print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrr");
       }
     }
@@ -110,71 +102,54 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await firebaseAuth.signOut();
   }
 
-
-
   @override
-Future<void> signUpUser(UserEntity user, BuildContext context) async {
-  try {
+  Future<void> signUpUser(UserEntity user, BuildContext context) async {
+    try {
+      final methods =
+          await firebaseAuth.fetchSignInMethodsForEmail(user.email!);
+      if (methods.isNotEmpty) {
+        _showIfAccountExistsDialog(context);
+        return;
+      } else {
+        UserCredential userCredential =
+            await firebaseAuth.createUserWithEmailAndPassword(
+          email: user.email!,
+          password: user.password!,
+        );
 
-    final existingUser = await firebaseFirestore
-        .collection("users")
-        .where("email", isEqualTo: user.email)
-        .get();
+        if (userCredential.user != null) {
+          await createUser(user);
 
-    if (existingUser.docs.isNotEmpty) {
-       _showIfAccountExistsDialog(context);
-       print("222222222222222222222user");
-    } else {
-          UserCredential userCredential =
-        await firebaseAuth.createUserWithEmailAndPassword(
-      email: user.email!,
-      password: user.password!,
-    );
-
-    if (userCredential.user != null) {
-
-      await createUser(user);
-
-      try {
-        await userCredential.user!.sendEmailVerification();
-      Navigator.pushNamed(context, ScreenConst.verificationScreen);
-
-      } catch (e) {
-        toast("Failed to send verification email: $e");
+          try {
+            await userCredential.user!.sendEmailVerification();
+            Navigator.pushNamed(context, ScreenConst.verificationScreen);
+          } catch (e) {
+            toast("Failed to send verification email: $e");
+          }
+        }
       }
-
-      }
-    }
-
-    
-         
-  } on FirebaseAuthException catch (e) {
-        toast('Something went wrong');
+    } on FirebaseAuthException catch (e) {
+      toast('Something went wrong');
 
       //    if (e.code == 'email-already-in-use') {
       //    _showIfAccountExistsDialog;
       // } else {
       // }
+    }
   }
- 
-}
-
 
   // @override
   // Future<void> signUpUser(UserEntity user) async {
   //   User? currentUser = FirebaseAuth.instance.currentUser;
-
 
   //   try {
   //     UserCredential userCredential =
   //         await firebaseAuth.createUserWithEmailAndPassword(
   //             email: user.email!, password: user.password!);
 
-            
-           
   //     if (userCredential.user != null) {
 
-  //            await createUser(user); // Save user to Firestore 
+  //            await createUser(user); // Save user to Firestore
 
   //         try {
   //                 await userCredential.user!.sendEmailVerification();
@@ -183,25 +158,16 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
   //               toast("Failed to send verification email: $e");
   //             }
 
-
-
-
-        
   //     }
-      
+
   //   } on FirebaseAuthException catch (e) {
-      // if (e.code == 'email-already-in-use') {
-      //   toast("Email is already taken");
-      // } else {
-      //   toast('Something went wrong');
-      // }
+  // if (e.code == 'email-already-in-use') {
+  //   toast("Email is already taken");
+  // } else {
+  //   toast('Something went wrong');
+  // }
   //   }
   // }
-
-
-
-
-
 
   @override
   Future<String> uploadImageToStorage(
@@ -254,7 +220,6 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
       throw Exception("Failed to update user data");
     }
   }
-
 
 // final FirebaseAuth _auth = FirebaseAuth.instance;
 // final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -363,7 +328,7 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
 //     final UserCredential userCredential = await _auth.signInWithCredential(credential);
 //     final User? user = userCredential.user;
 
-//     await Future.delayed(Duration(seconds: 2)); 
+//     await Future.delayed(Duration(seconds: 2));
 
 //     if (user != null) {
 //       print("✅ Firebase Sign-In successful: ${user.uid}");
@@ -377,7 +342,6 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
 //     return null;
 //   }
 // }
-
 
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -423,7 +387,8 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
       if (user != null) {
         await _saveUserToFirestore(user);
       }
-       Navigator.push(context, MaterialPageRoute(builder: (ctx) => MainScreen(uid: user!.uid)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (ctx) => MainScreen(uid: user!.uid)));
 
       return userCredential;
     } catch (e) {
@@ -431,10 +396,6 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
       return null;
     }
   }
-
-
-
-
 
   Future<bool> _checkIfUserExists(String? email) async {
     if (email == null) return false;
@@ -488,62 +449,66 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
 // }
 
   void _showIfAccountExistsDialog(BuildContext context) {
-   showTopSnackBar(
-    Overlay.of(context),
-    Material(
-      elevation: 6,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.warning, color: Colors.white,),
-            SizedBox(width: 8),
-            Expanded(child: Text(
-              "Account already exist, Please log in instead.",
-              style: TextStyle(color: Colors.white),
-            ))
-          ],
-        ),
-      ),
-    )
-   );
+    showTopSnackBar(
+        Overlay.of(context),
+        Material(
+          elevation: 6,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.warning,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                    child: Text(
+                  "Account already exist, Please log in instead.",
+                  style: TextStyle(color: Colors.white),
+                ))
+              ],
+            ),
+          ),
+        ));
   }
 
-   void _showIfAccountNotExistsDialog(BuildContext context) {
-   showTopSnackBar(
-    Overlay.of(context),
-    Material(
-      elevation: 6,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.warning, color: Colors.white,),
-            SizedBox(width: 8),
-            Expanded(child: Text(
-              "Account doesn't exist, Please sign up instead.",
-              style: TextStyle(color: Colors.white),
-            ))
-          ],
-        ),
-      ),
-    )
-   );
+  void _showIfAccountNotExistsDialog(BuildContext context) {
+    showTopSnackBar(
+        Overlay.of(context),
+        Material(
+          elevation: 6,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.warning,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                    child: Text(
+                  "Account doesn't exist, Please sign up instead.",
+                  style: TextStyle(color: Colors.white),
+                ))
+              ],
+            ),
+          ),
+        ));
   }
-
-
 
   //   void _showIfAccountNotExistsDialog() {
   //   showDialog(
@@ -556,7 +521,7 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
   //         actions: [
   //           TextButton(
   //             onPressed: () {
-  //               Navigator.of(context).pop(); 
+  //               Navigator.of(context).pop();
   //             },
   //             child: Text(
   //               "Okay",
@@ -595,10 +560,7 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
     }
   }
 
-
-
-  
- @override
+  @override
   Future<UserCredential?> signInWithGoogle(BuildContext context) async {
     try {
       await _googleSignIn.signOut();
@@ -646,7 +608,4 @@ Future<void> signUpUser(UserEntity user, BuildContext context) async {
       return null;
     }
   }
-
-
-
 }

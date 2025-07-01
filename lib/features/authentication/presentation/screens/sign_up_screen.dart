@@ -67,10 +67,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   bool _validateEmail(String email) {
-  final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w{2,6}$');
-  return regex.hasMatch(email);
-}
-
+    final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w{2,6}$');
+    return regex.hasMatch(email);
+  }
 
   bool _validateName(String name) {
     return name.trim().isNotEmpty;
@@ -109,28 +108,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     return null;
   }
+
   void _onTextChanged(String value, String field) {
-  setState(() {
-    final error = _validateField(value, field);
+    setState(() {
+      final error = _validateField(value, field);
 
-    switch (field) {
-      case "email":
-        _emailError = error != null;
-        _validateErrorMessage = error != null;
-        break;
-      case "password":
-        _passwordError = error != null;
-        break;
-      case "name":
-        _nameError = error != null;
-        break;
-      case "confirmPassword":
-        _confirmPasswordError = error != null;
-        break;
-    }
-  });
-}
-
+      switch (field) {
+        case "email":
+          _emailError = error != null;
+          _validateErrorMessage = error != null;
+          break;
+        case "password":
+          _passwordError = error != null;
+          break;
+        case "name":
+          _nameError = error != null;
+          break;
+        case "confirmPassword":
+          _confirmPasswordError = error != null;
+          break;
+      }
+    });
+  }
 
   // void _onTextChanged(String value, String field) {
   //   setState(() {
@@ -165,12 +164,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           });
         }
 
-        if (credentailState is CredentialSuccess 
-        // &&
-        //     user != null &&
-        //     user.emailVerified
+        if (credentailState is CredentialSuccess
+            // &&
+            //     user != null &&
+            //     user.emailVerified
             ) {
-              
           // BlocProvider.of<AuthCubit>(context).loggedIn();
           // Navigator.pushNamed(
           //     context, ScreenConst.verificationScreen);
@@ -183,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           setState(() {
             _isSigningUp = false;
           });
-          toast('Invalid Email and Password');
+          toast(credentailState.errorMessage);
         }
       },
       builder: (context, credentailState) {
@@ -514,75 +512,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  void _signUpUser() async {
+    try {
+      setState(() {
+        _isSigningUp = true;
+        _emailError = _emailController.text.isEmpty;
+        _passwordError = _passwordController.text.isEmpty;
+        _nameError = _nameController.text.isEmpty;
+        _confirmPasswordError = _confirmPasswordController.text.isEmpty;
+      });
 
+      await BlocProvider.of<CredentialCubit>(context).signUpUser(
+        context: context,
+        user: UserEntity(
+          uid: '',
+          name: _nameController.text,
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          confirmPassword: _confirmPasswordController.text,
+        ),
+      );
 
-void _signUpUser() async {
-  try {
-    setState(() {
-      _isSigningUp = true;
-      _emailError = _emailController.text.isEmpty;
-      _passwordError = _passwordController.text.isEmpty;
-      _nameError = _nameController.text.isEmpty;
-      _confirmPasswordError = _confirmPasswordController.text.isEmpty;
-    });
-
-    await BlocProvider.of<CredentialCubit>(context).signUpUser(
-      context: context,
-      user: UserEntity(
-        uid: '',
-        name: _nameController.text,
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        confirmPassword: _confirmPasswordController.text,
-      ),
-    );
-    
-
-    // if (success) {
-    //   _clear();
-    //   Navigator.pushNamed(context, ScreenConst.verificationScreen);
-    // } else {
-    //   _showIfAccountExistsDialog;
-    //   setState(() {
-    //     _isSigningUp = false;
-    //   });
-    // }
-  } catch (e) {
-    setState(() {
-      _isSigningUp = false;
-    });
-    toast("Sign up failed. Please try again.");
+      // if (success) {
+      //   _clear();
+      //   Navigator.pushNamed(context, ScreenConst.verificationScreen);
+      // } else {
+      //   _showIfAccountExistsDialog;
+      //   setState(() {
+      //     _isSigningUp = false;
+      //   });
+      // }
+    } catch (e) {
+      setState(() {
+        _isSigningUp = false;
+      });
+      toast("Sign up failed. Please try again.");
+    }
   }
-}
-
-
 
   void _showIfAccountExistsDialog(BuildContext context) {
-   showTopSnackBar(
-    Overlay.of(context),
-    Material(
-      elevation: 6,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.warning, color: Colors.white,),
-            SizedBox(width: 8),
-            Expanded(child: Text(
-              "Account already exist, Please log in instead.",
-              style: TextStyle(color: Colors.white),
-            ))
-          ],
-        ),
-      ),
-    )
-   );
+    showTopSnackBar(
+        Overlay.of(context),
+        Material(
+          elevation: 6,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.warning,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                    child: Text(
+                  "Account already exist, Please log in instead.",
+                  style: TextStyle(color: Colors.white),
+                ))
+              ],
+            ),
+          ),
+        ));
   }
 
   // void _signUpUser() async {
@@ -607,9 +603,6 @@ void _signUpUser() async {
   //           confirmPassword: _confirmPasswordController.text),
   //     )
   //         .then((value) => _clear());
-        
-
-
 
   //   } catch (e) {
   //     setState(() {

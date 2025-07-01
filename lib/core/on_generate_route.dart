@@ -11,6 +11,8 @@ import 'package:homix/features/home/data/models/property_model.dart';
 import 'package:homix/features/home/presentation/screens/popular_apartments_screen.dart';
 import 'package:homix/features/home/presentation/screens/property_details_screen.dart';
 import 'package:homix/features/onboarding_screen/presentation/screens/onboarding_screen.dart';
+import 'package:homix/features/profile/presentation/screens/personal_information_screen.dart';
+import 'package:homix/features/search/presentation/screens/search_screen.dart';
 import 'package:homix/main_screen.dart';
 import 'package:homix/splash_screen.dart';
 
@@ -44,6 +46,12 @@ class OnGenerateRoute {
       }
       case ScreenConst.PopularApartmentsScreen: {
         return _fadeRoute(PopularApartmentsScreen());
+      }
+       case ScreenConst.searchScreen: {
+        return _fadeRoute(SearchScreen());
+      }
+      case ScreenConst.personalInformationScreen: {
+        return _fadeRoute(PersonalInformationScreen());
       }
   
     

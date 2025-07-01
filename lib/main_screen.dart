@@ -7,7 +7,7 @@ import 'package:homix/core/const.dart';
 import 'package:homix/features/authentication/presentation/cubit/auth_cubit/auth_cubit.dart';
 import 'package:homix/features/authentication/presentation/cubit/get_single_user_cubit/get_single_user_cubit.dart';
 import 'package:homix/features/chat/presentation/screens/chat_screen.dart';
-import 'package:homix/features/favorites/presentation/cubit/screens/favorites_screen.dart';
+import 'package:homix/features/favorites/presentation/screens/favorites_screen.dart';
 import 'package:homix/features/home/data/datasources/remote_data_sources/home_remote_data_source_impl.dart';
 import 'package:homix/features/home/data/repositories/home_repo_impl.dart';
 import 'package:homix/features/home/domain/usecases/get_property_usecase.dart';
@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  BottomNavigationBarItem buildTabTtem(IconData icon, int index) {
+  BottomNavigationBarItem buildTabItem(IconData icon, int index) {
     bool isActive = _currentIndex == index;
 
     return BottomNavigationBarItem(
@@ -124,9 +124,8 @@ class _MainScreenState extends State<MainScreen> {
                   controller: pageController,
                   onPageChanged: onPageChanged,
                   children: [
-                    SearchScreen(),
-                    FavoritesScreen(),
                     HomeScreen(),
+                    FavoritesScreen(),
                     // BlocProvider(
                     //   create: (context) => PropertyCubit(
                     //     getApartmentUsecase: GetApartmentUsecase(
@@ -138,7 +137,9 @@ class _MainScreenState extends State<MainScreen> {
                     //   child: HomeScreen(),
                     // ),
                     ChatScreen(),
-                    ProfileScreen(),
+                    ProfileScreen(
+                      currentUser: currentUser,
+                    ),
                   ],
                 ),
                 Align(
@@ -149,11 +150,11 @@ class _MainScreenState extends State<MainScreen> {
                     onTap: _onTap,
                     backgroundColor: Colors.grey[200],
                     items: [
-                      buildTabTtem(PhosphorIconsRegular.magnifyingGlass, 0),
-                      buildTabTtem(PhosphorIconsRegular.heart, 1),
-                      buildTabTtem(PhosphorIconsRegular.house, 2),
-                      buildTabTtem(PhosphorIconsRegular.chatCircle, 3),
-                      buildTabTtem(PhosphorIconsRegular.user, 4),
+                      //buildTabItem(PhosphorIconsRegular.magnifyingGlass, 0),
+                      buildTabItem(PhosphorIconsRegular.house, 0),
+                      buildTabItem(PhosphorIconsRegular.heart, 1),
+                      buildTabItem(PhosphorIconsRegular.chatCircle, 2),
+                      buildTabItem(PhosphorIconsRegular.user, 3),
                     ],
                   ),
                 ),
