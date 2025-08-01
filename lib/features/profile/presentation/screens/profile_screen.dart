@@ -39,13 +39,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(width * 0.16)),
           ),
           SizedBox(height: height * 0.02),
-          Text("${widget.currentUser.name}",
+          Text("Olivia Bennett",
+              //"${widget.currentUser.name}",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: width * 0.05,
               )),
           SizedBox(height: height * 0.001),
-          Text("${widget.currentUser.email}",
+          Text("olivia.bennett92@gmail.com",
+              //"${widget.currentUser.email}",
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: width * 0.033,

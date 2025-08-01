@@ -282,7 +282,11 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                               height: width * 0.14,
                               width: width * 0.14,
                               decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  image: DecorationImage(
+                                    image: AssetImage("assets/pp.jpg"),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  // color: Colors.white,
                                   borderRadius:
                                       BorderRadius.circular(width * 0.09)),
                             ),

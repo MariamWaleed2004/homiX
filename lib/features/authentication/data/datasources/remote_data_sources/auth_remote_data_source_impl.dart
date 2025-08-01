@@ -27,29 +27,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required this.firebaseStorage,
   });
 
-  // Future<void> createUserWithImage(UserEntity user, String profileUrl) async {
-  //   final userCollection = firebaseFirestore.collection(FirebaseConst.users);
-
-  //   final uid = await getCurrentUid();
-
-  //   userCollection.doc(uid).get().then((userDoc) {
-  //     final newUser = UserModel(
-  //       uid: uid,
-  //       name: user.name,
-  //       email: user.email,
-  //     ).toJson();
-
-  //     if(!userDoc.exists) {
-  //       userCollection.doc(uid).set(newUser);
-  //     } else {
-  //       userCollection.doc(uid).update(newUser);
-  //     }
-
-  //   }).catchError((error) {
-  //     toast("some error occur");
-  //   });
-  // }
-
   @override
   Future<void> createUser(UserEntity user) async {
     final userCollection = firebaseFirestore.collection(FirebaseConst.users);
@@ -82,19 +59,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> signInUser(UserEntity user, BuildContext context) async {
     try {
-      final methods =
-          await firebaseAuth.fetchSignInMethodsForEmail(user.email!);
-      if (methods.isEmpty) {
-        _showIfAccountNotExistsDialog(context);
-      } else {
-        await firebaseAuth.signInWithEmailAndPassword(
-            email: user.email!, password: user.password!);
-      }
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: user.email!, password: user.password!);
+      // ✅ تسجيل الدخول تم بنجاح
     } on FirebaseAuthException catch (e) {
-      if (e.code == "wrong-password") {
-        print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        // ❌ ما تقوليش للمستخدم "الإيميل مش موجود"
+        // قولي: "الإيميل أو كلمة المرور غير صحيحة"
+        _showInvalidEmailOrPasswordDialog(context);
+      } else {
+        toast(e.message ?? 'Something went wrong');
       }
     }
+
+    // try {
+    //   final methods =
+    //       await firebaseAuth.fetchSignInMethodsForEmail(user.email!);
+    //   if (methods.isEmpty) {
+    //     _showIfAccountNotExistsDialog(context);
+    //   } else {
+    //     await firebaseAuth.signInWithEmailAndPassword(
+    //         email: user.email!, password: user.password!);
+    //   }
+    // } on FirebaseAuthException catch (e) {
+    //   if (e.code == "wrong-password") {
+    //     print("errorrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+    //   }
+    // }
   }
 
   @override
@@ -137,37 +128,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // }
     }
   }
-
-  // @override
-  // Future<void> signUpUser(UserEntity user) async {
-  //   User? currentUser = FirebaseAuth.instance.currentUser;
-
-  //   try {
-  //     UserCredential userCredential =
-  //         await firebaseAuth.createUserWithEmailAndPassword(
-  //             email: user.email!, password: user.password!);
-
-  //     if (userCredential.user != null) {
-
-  //            await createUser(user); // Save user to Firestore
-
-  //         try {
-  //                 await userCredential.user!.sendEmailVerification();
-
-  //             } catch (e) {
-  //               toast("Failed to send verification email: $e");
-  //             }
-
-  //     }
-
-  //   } on FirebaseAuthException catch (e) {
-  // if (e.code == 'email-already-in-use') {
-  //   toast("Email is already taken");
-  // } else {
-  //   toast('Something went wrong');
-  // }
-  //   }
-  // }
 
   @override
   Future<String> uploadImageToStorage(
@@ -220,128 +180,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw Exception("Failed to update user data");
     }
   }
-
-// final FirebaseAuth _auth = FirebaseAuth.instance;
-// final GoogleSignIn _googleSignIn = GoogleSignIn();
-// final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-// @override
-// Future<UserCredential?> signInWithGoogle() async {
-//   try {
-//     print("🔄 Signing out previous sessions...");
-//     await _googleSignIn.signOut();
-//     await _auth.signOut();
-
-//     try {
-//       await _googleSignIn.disconnect();
-//     } catch (e) {
-//       print("⚠️ GoogleSignIn disconnect failed: $e");
-//     }
-
-//     print("🟢 Opening Google Sign-In...");
-//     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-//     if (googleUser == null) {
-//       print("❌ User canceled Google Sign-In");
-//       return null;
-//     }
-
-//     print("✅ Google Sign-In successful: ${googleUser.email}");
-
-//     // Check if the account already exists in Firestore
-//     print("🔍 Checking if account exists...");
-//     bool accountExists = await _checkIfUserExists(googleUser.email);
-
-//     if (accountExists) {
-//       print("⚠️ Account already exists!");
-//       _showAccountExistsDialog();
-//       return null; // Stop the process if the account exists
-//     }
-
-//     // Proceed with Firebase sign-in if the account does not exist
-//     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-//     final OAuthCredential credential = GoogleAuthProvider.credential(
-//       idToken: googleAuth.idToken,
-//       accessToken: googleAuth.accessToken,
-//     );
-
-//     print("🔄 Signing in with Firebase...");
-//     final UserCredential userCredential = await _auth.signInWithCredential(credential);
-//     final User? user = userCredential.user;
-
-//     await Future.delayed(Duration(seconds: 2));
-
-//     if (user != null) {
-//       print("✅ Firebase Sign-In successful: ${user.uid}");
-//       await _saveUserToFirestore(user); // Save the new user to Firestore
-//     }
-
-//     return userCredential;
-//   } catch (e) {
-//     print("❌ Error signing in with Google: $e");
-//     toast("Something went wrong: ${e.toString()}");
-//     return null;
-//   }
-// }
-
-// @override
-// Future<UserCredential?> signInWithGoogle() async {
-//   try {
-//     print("🔄 Signing out previous sessions...");
-//     await _googleSignIn.signOut();
-//     await _auth.signOut();
-
-//     try {
-//       await _googleSignIn.disconnect();
-//     } catch (e) {
-//       print("⚠️ GoogleSignIn disconnect failed: $e");
-//     }
-
-//     print("🟢 Opening Google Sign-In...");
-//     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-//     if (googleUser == null) {
-//       print("❌ User canceled Google Sign-In");
-//       return null;
-//     }
-
-//     print("✅ Google Sign-In successful: ${googleUser.email}");
-
-//     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-//     final OAuthCredential credential = GoogleAuthProvider.credential(
-//       idToken: googleAuth.idToken,
-//       accessToken: googleAuth.accessToken,
-//     );
-
-//     print("🔍 Checking if account exists...");
-//     bool accountExists = await _checkIfUserExists(googleUser.email);
-
-//     if (accountExists) {
-//       print("⚠️ Account already exists!");
-//       toast("Account already exists. Please log in instead.");
-//       return null;
-//     }
-
-//     print("🔄 Signing in with Firebase...");
-//     final UserCredential userCredential = await _auth.signInWithCredential(credential);
-//     final User? user = userCredential.user;
-
-//     await Future.delayed(Duration(seconds: 2));
-
-//     if (user != null) {
-//       print("✅ Firebase Sign-In successful: ${user.uid}");
-//       await _saveUserToFirestore(user);
-//     }
-
-//     return userCredential;
-//   } catch (e) {
-//     print("❌ Error signing in with Google: $e");
-//     toast("Something went wrong: ${e.toString()}");
-//     return null;
-//   }
-// }
 
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -397,56 +235,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
-  Future<bool> _checkIfUserExists(String? email) async {
-    if (email == null) return false;
+  Future<bool> _checkIfUserExists(String uid) async {
 
-    print("11111111111111111Checking if user exists: $email");
+    try {
+    DocumentSnapshot doc =
+        await _firestore.collection('users').doc(uid).get();
 
-    if (FirebaseAuth.instance.currentUser != null) {
-      print("User is signed in: ${FirebaseAuth.instance.currentUser!.uid}");
-    } else {
-      print("No user is signed in!");
-    }
-
-    var querySnapshot = await _firestore
-        .collection('users')
-        .where('email', isEqualTo: email)
-        // .limit(1)
-        .get();
-
-    bool exists = querySnapshot.docs.isNotEmpty;
-    print('User exists: $exists');
-
-    return exists;
+    return doc.exists;
+  } catch (e) {
+    print("Error checking user existence: $e");
+    return false;
   }
-
-//   Future<bool> _checkIfUserExists(String? email) async {
-//   if (email == null) return false;
-
-//   print("Checking if user exists: $email");
-
-//   if (_auth.currentUser != null) {
-//     print("User is signed in: ${_auth.currentUser!.uid}");
-//   } else {
-//     print("No user is signed in!");
-//   }
-
-//   try {
-//     var querySnapshot = await _firestore
-//         .collection('users')
-//         .where('email', isEqualTo: email)
-//         .limit(1)
-//         .get();
-
-//     bool exists = querySnapshot.docs.isNotEmpty;
-//     print('User exists: $exists');
-
-//     return exists;
-//   } catch (e) {
-//     print("Error querying Firestore: $e");
-//     return false;
-//   }
-// }
+  }
 
   void _showIfAccountExistsDialog(BuildContext context) {
     showTopSnackBar(
@@ -479,7 +279,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         ));
   }
 
-  void _showIfAccountNotExistsDialog(BuildContext context) {
+  void _showInvalidEmailOrPasswordDialog(BuildContext context) {
     showTopSnackBar(
         Overlay.of(context),
         Material(
@@ -501,7 +301,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
                 SizedBox(width: 8),
                 Expanded(
                     child: Text(
-                  "Account doesn't exist, Please sign up instead.",
+                  "Invalid email or password",
                   style: TextStyle(color: Colors.white),
                 ))
               ],
@@ -509,32 +309,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           ),
         ));
   }
-
-  //   void _showIfAccountNotExistsDialog() {
-  //   showDialog(
-  //     context: navigatorKey.currentState!.overlay!.context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text("Sign in failed"),
-  //         content:
-  //             Text("Account doesn't exists. Please sign up instead."),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //             child: Text(
-  //               "Okay",
-  //               style: TextStyle(
-  //                 color: Colors.black
-  //               ),
-  //               ),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   Future<void> _saveUserToFirestore(User user) async {
     final userDoc =
@@ -587,20 +361,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         accessToken: googleAuth.accessToken,
       );
 
-      bool accountExists = await _checkIfUserExists(googleUser.email);
+
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+    if (user == null) {
+      print("User is null after sign-in");
+      return null;
+    }
+      bool accountExists = await _checkIfUserExists(googleUser.id);
       if (!accountExists) {
-        _showIfAccountNotExistsDialog(context);
+
+        _showInvalidEmailOrPasswordDialog(context);
         return null;
       }
 
-      // Sign in the user with Firebase
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        await _saveUserToFirestore(user);
-      }
+      await _saveUserToFirestore(user);
 
       return userCredential;
     } catch (e) {
